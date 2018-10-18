@@ -192,7 +192,6 @@ public class Controller implements Initializable {
 
         }
     }
-
     /*
        Updates the customer the user currently has selected on the table with the new information in the text fields
        precondition: a customer on the table has been selected and the user entered information in the proper format in the text fields
@@ -349,6 +348,20 @@ public class Controller implements Initializable {
             Parent root = (Parent)fxmlLoader.load();
             Stage stage = new Stage();
             stage.setTitle("Login");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e){
+            System.err.println(e);
+        }
+    }
+
+    public void inventoryWindow(MouseEvent mouseEvent){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("InventoryLogin.fxml"));
+            Parent root = (Parent)fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Inventory Login");
             stage.setScene(new Scene(root));
             stage.show();
 

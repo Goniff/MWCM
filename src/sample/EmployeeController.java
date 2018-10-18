@@ -254,6 +254,7 @@ public class EmployeeController implements Initializable {
         }
     }
 
+
     /*
        Deletes the employee the user has currently selected in both the database and the table
        precondition: proper employee has been stored and user double clicks on the employee

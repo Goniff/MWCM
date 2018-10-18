@@ -24,7 +24,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
-public class LoginController implements Initializable {
+public class InventoryLoginController implements Initializable {
 
     @FXML
     private PasswordField password;
@@ -58,8 +58,8 @@ public class LoginController implements Initializable {
     public void loginTest(KeyEvent keyEvent){
         password.setOnKeyPressed(e ->{
             if(e.getCode() == KeyCode.ENTER){
-                    verifyLogin();
-                }}
+                verifyLogin();
+            }}
         );
     }
 
@@ -78,7 +78,7 @@ public class LoginController implements Initializable {
                 Stage stage1 = (Stage) status.getScene().getWindow();
                 stage1.close();
 
-                loadEmployee();
+                loadInventory();
 
 
             }else {
@@ -89,12 +89,12 @@ public class LoginController implements Initializable {
         }
     }
 
-    public void loadEmployee(){
+    public void loadInventory(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Employee.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("inventory.fxml"));
             Parent root = (Parent)fxmlLoader.load();
             Stage stage = new Stage();
-            stage.setTitle("Employee");
+            stage.setTitle("Inventory");
             stage.setScene(new Scene(root));
             stage.show();
 
