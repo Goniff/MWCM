@@ -85,11 +85,17 @@ public class CarController implements Initializable {
             ResultSet rs = statement.executeQuery("select * from Customer");
 
             while (rs.next()) {
-                Customer newCustomer = new Customer(rs.getString("firstName"), rs.getString("lastName"), rs.getString("number"),
-                        rs.getString("email"), rs.getString("address"), rs.getString("city"),rs.getString("zipcode"),rs.getString("state"));
+                Customer newCustomer = new Customer(
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("number"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getString("city"),
+                        rs.getString("zipcode"),
+                        rs.getString("state"));
                 String customerNames =  newCustomer.getName();
                 customers.add(newCustomer);
-               // custNames.add(customerNames);
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
@@ -109,7 +115,12 @@ public class CarController implements Initializable {
             ResultSet rs = statement.executeQuery("select * from Car");
 
             while (rs.next()){
-                Car newCar = new Car(rs.getString("userID"),rs.getString("make"),rs.getString("model"),rs.getString("year"),rs.getString("comments"));
+                Car newCar = new Car(
+                        rs.getString("userID"),
+                        rs.getString("make"),
+                        rs.getString("model"),
+                        rs.getString("year"),
+                        rs.getString("comments"));
                 System.out.println(newCar.getUserID());
                 cars.add(newCar);
 

@@ -370,6 +370,27 @@ public class Controller implements Initializable {
         }
     }
 
+    /*
+       Opens the Car Service Order window which displays all the Orders in the system's database when the user
+       clicks the Car Service Order button
+       precondition: the customer page must be running and displaying properly
+       postcondition: a new window is opened with methods and information pertaining to Car Service Orders objects
+       and the CarServiceOrderController
+    */
+    public void carServiceOrderWindow(MouseEvent mouseEvent){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("CarServiceOrder.fxml"));
+            Parent root = (Parent)fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Car Service Orders");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e){
+            System.err.println(e);
+        }
+    }
+
     public void updatePopup(){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("UpdatePopup.fxml"));

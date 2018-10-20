@@ -163,6 +163,7 @@
                               <Button fx:id="cars_button" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#carWindow" prefHeight="128.0" prefWidth="135.0" text="Cars" />
                               <Button fx:id="employee_button" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#employeeWindow" prefHeight="128.0" prefWidth="135.0" text="Employees" />
                               <Button fx:id="inventory_button" mnemonicParsing="false" onMouseClicked="#inventoryWindow" text="Inventory" />
+                              <Button fx:id="CarServiceOrder_btn" mnemonicParsing="false" onMouseClicked="#carServiceOrderWindow" text="Car Service Order" />
                            </children>
                            <padding>
                               <Insets top="2.0" />

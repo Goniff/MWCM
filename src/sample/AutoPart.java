@@ -55,4 +55,10 @@ public class AutoPart {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    @Override
+    // Overridden toString method used for displaying the customer's name in a dropdown menu
+    public String toString() {
+        return name + " $" + price;
+    }
 }

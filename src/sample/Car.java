@@ -59,4 +59,11 @@ public class Car {
     public void setComments(String comments) {
         this.comments = comments;
     }
+
+    @Override
+    // Overridden toString method used for displaying the customer's name in a dropdown menu
+    public String toString() {
+        return make + " " + model + " " + year;
+    }
+
 }
