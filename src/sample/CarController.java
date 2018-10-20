@@ -206,7 +206,6 @@ public class CarController implements Initializable {
                 Car newCar = new Car(rs.getString("userID"),rs.getString("make"),rs.getString("model"),rs.getString("year"),rs.getString("comments"));
                 System.out.println(newCar.getUserID());
                 cars.add(newCar);
-
             }
         }catch (Exception e){
             System.err.println(e);

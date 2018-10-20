@@ -118,7 +118,4 @@ public class Customer {
                 Objects.equals(getEmailAddress(), customer.getEmailAddress()) &&
                 Objects.equals(getAddress(), customer.getAddress());
     }
-
-
-
 }

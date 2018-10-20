@@ -1,5 +1,6 @@
 package sample;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Car {
@@ -66,4 +67,18 @@ public class Car {
         return make + " " + model + " " + year;
     }
 
+//<<<<<<< HEAD
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Car car = (Car) o;
+//        return Objects.equals(getUserID(), car.getUserID()) &&
+//                Objects.equals(getMake(), car.getMake()) &&
+//                Objects.equals(getModel(), car.getModel()) &&
+//                Objects.equals(getYear(), car.getYear()) &&
+//                Objects.equals(getComments(), car.getComments());
+//    }
+//=======
+//>>>>>>> master
 }

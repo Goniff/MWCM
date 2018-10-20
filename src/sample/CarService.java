@@ -38,6 +38,7 @@ public class CarService {
         this.price = price;
     }
 
+
     @Override
     // Overridden toString method used for displaying the customer's name in a dropdown menu
     public String toString() {

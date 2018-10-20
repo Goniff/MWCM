@@ -203,7 +203,7 @@ public class EmployeeController implements Initializable {
 
     /*
        Updates the employee the user currently has selected on the table with the new information in the text fields
-       precondition: a employee on the table has been selected and the user entered information in the proper format in the text fields
+       precondition: an employee on the table has been selected and the user entered information in the proper format in the text fields
        postcondition: the selected employee is updated in both table and database
     */
     public void updateEmployee(ActionEvent actionEvent) {
