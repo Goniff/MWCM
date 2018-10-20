@@ -64,6 +64,10 @@ public class Controller implements Initializable {
     private Button cars_button;
     @FXML
     private Button employee_button;
+    @FXML
+    private Button inventory_button;
+    @FXML
+    private Button CarServiceOrder_btn;
 
     static ObservableList<Customer> customers = FXCollections.observableArrayList();
     private ObservableList<String> state_list = FXCollections.observableArrayList();
@@ -92,6 +96,12 @@ public class Controller implements Initializable {
 
         Image imageEmployee = new Image(getClass().getResourceAsStream("../Images/employee.png"));
         employee_button.setGraphic(new ImageView(imageEmployee));
+
+        Image imageInventory = new Image(getClass().getResourceAsStream("../Images/inventory.png"));
+        inventory_button.setGraphic(new ImageView(imageInventory));
+
+        Image carService = new Image(getClass().getResourceAsStream("../Images/carservices.png"));
+        CarServiceOrder_btn.setGraphic(new ImageView(carService));
     }
     /*
         Connecting to database and reading Customer objects to populate ObservableList
