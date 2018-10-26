@@ -57,6 +57,7 @@ public class InventoryController implements Initializable {
 
 
     public void initialize(URL location, ResourceBundle resources) {
+        parts.clear();
         col_id.setCellValueFactory(new PropertyValueFactory<AutoPart, String>("id"));
         col_name.setCellValueFactory(new PropertyValueFactory<AutoPart, String>("name"));
         col_qty.setCellValueFactory(new PropertyValueFactory<AutoPart, String>("quantity"));

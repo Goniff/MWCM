@@ -341,7 +341,7 @@ public class CarServiceOrderController implements Initializable {
         String car_ID = carList.getSelectionModel().getSelectedItem().getModel();
         String service_ID = carServiceList.getSelectionModel().getSelectedItem().getService_ID();
         String part_ID =
-                (autopartList.getSelectionModel().getSelectedItem().getId() == null) ?
+                (autopartList.getSelectionModel().getSelectedItem() == null) ?
                         "" : autopartList.getSelectionModel().getSelectedItem().getId();
         String comments = text_comments.getText();
         int index = employeeList.getSelectionModel().getSelectedIndex()+1;
@@ -545,7 +545,7 @@ public class CarServiceOrderController implements Initializable {
                     }
                 }
                 for (int i = 0; i<carServices.size(); i++){
-                    if (carServices.get(i).getService_ID().equals(clickedCSO.getService_ID())){
+                    if (carServices.get(i).getService_Name().equals(clickedCSO.getService_ID())){
                         carServiceList.getSelectionModel().select(carServices.get(i));
                     }
                 }

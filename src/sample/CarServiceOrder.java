@@ -29,6 +29,7 @@ public class CarServiceOrder {
         Order_ID = cust_id + service_id + car_id;
     }
 
+
     public CarServiceOrder(long pkey, String cust_id, String car_id, String service_id, String part_ID, double price,
                            String comments, long emp_key){
         this.pKey = new SimpleLongProperty(pkey);
