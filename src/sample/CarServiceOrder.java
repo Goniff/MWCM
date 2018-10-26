@@ -16,7 +16,7 @@ public class CarServiceOrder {
     private String Comments = "";
     private String Order_ID;
 
-
+    // Constructor for adding to DB
     public CarServiceOrder(String cust_id, String car_id, String service_id, String part_ID, double price,
                            String comments, long emp_key){
         this.Customer_ID = cust_id;
@@ -29,7 +29,7 @@ public class CarServiceOrder {
         Order_ID = cust_id + service_id + car_id;
     }
 
-
+    // Constructor for reading from DB
     public CarServiceOrder(long pkey, String cust_id, String car_id, String service_id, String part_ID, double price,
                            String comments, long emp_key){
         this.pKey = new SimpleLongProperty(pkey);
