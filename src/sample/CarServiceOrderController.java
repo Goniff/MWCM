@@ -199,6 +199,8 @@ public class CarServiceOrderController implements Initializable {
 
             while (rs.next()) {
                 Car newCar = new Car(
+                        rs.getLong("Key"),
+                        rs.getLong("Customer_Key"),
                         rs.getString("userID"),
                         rs.getString("make"),
                         rs.getString("model"),

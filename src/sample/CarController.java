@@ -86,6 +86,7 @@ public class CarController implements Initializable {
 
             while (rs.next()) {
                 Customer newCustomer = new Customer(
+                        rs.getLong("Key"),
                         rs.getString("firstName"),
                         rs.getString("lastName"),
                         rs.getString("number"),
@@ -116,6 +117,8 @@ public class CarController implements Initializable {
 
             while (rs.next()){
                 Car newCar = new Car(
+                        rs.getLong("Key"),
+                        rs.getLong("Customer_Key"),
                         rs.getString("userID"),
                         rs.getString("make"),
                         rs.getString("model"),
@@ -147,9 +150,10 @@ public class CarController implements Initializable {
         }else{
             Customer selectedCustomer = customerList.getSelectionModel().getSelectedItem();
             String customerUserID = selectedCustomer.getUserID();
-            Car newCar = new Car(customerUserID,make,model,year,comments);
-            cars.add(newCar);
-            String sql = "INSERT INTO Car(userID,make,model,year,comments) VALUES(?,?,?,?,?)";
+            long cust_key = selectedCustomer.getpKey().getValue();
+            //Car newCar = new Car(customerUserID,make,model,year,comments);
+            //cars.add(newCar);
+            String sql = "INSERT INTO Car(userID,make,model,year,comments,Customer_Key) VALUES(?,?,?,?,?,?)";
             try {
                 Connection con = DBConnector.getConnection();
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -158,10 +162,12 @@ public class CarController implements Initializable {
                 preparedStatement.setString(3, model);
                 preparedStatement.setString(4, year);
                 preparedStatement.setString(5, comments);
+                preparedStatement.setLong(6, cust_key);
                 preparedStatement.execute();
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
             }
+            refreshTable();
         }
     }
 
@@ -172,10 +178,13 @@ public class CarController implements Initializable {
     */
     public void deleteCar(ActionEvent actionEvent){
         Car clickedCar = carTableView.getSelectionModel().getSelectedItem();
-        String sql = "DELETE FROM Car where userID = '" + clickedCar.getUserID() + "'";
+        //String sql = "DELETE FROM Car where userID = '" + clickedCar.getUserID() + "'";
+        String sql = "DELETE FROM Car where Key = ?";
+        long pkey = clickedCar.getpKey();
         try {
             Connection con = DBConnector.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setLong(1, pkey);
             preparedStatement.execute();
             System.out.println("Delete Successful");
             refreshTable();
@@ -203,7 +212,14 @@ public class CarController implements Initializable {
             ResultSet rs = statement.executeQuery("select * from Car");
 
             while (rs.next()){
-                Car newCar = new Car(rs.getString("userID"),rs.getString("make"),rs.getString("model"),rs.getString("year"),rs.getString("comments"));
+                Car newCar = new Car(
+                        rs.getLong("Key"),
+                        rs.getLong("Customer_Key"),
+                        rs.getString("userID"),
+                        rs.getString("make"),
+                        rs.getString("model"),
+                        rs.getString("year"),
+                        rs.getString("comments"));
                 System.out.println(newCar.getUserID());
                 cars.add(newCar);
             }
@@ -248,11 +264,12 @@ public class CarController implements Initializable {
     */
     public void updateCar(ActionEvent actionEvent){
         Car clickedCar = carTableView.getSelectionModel().getSelectedItem();
-        Customer customer = customerList.getSelectionModel().getSelectedItem();
+        Customer selctedCustomer = customerList.getSelectionModel().getSelectedItem();
         int index = carTableView.getSelectionModel().getSelectedIndex();
         System.out.println("index: " +index);
 
-        String customerID = customer.getUserID();
+        String customerID = selctedCustomer.getUserID();
+        long cust_key = selctedCustomer.getpKey().getValue();
         System.out.println("Customer ID: " + customerID);
 
         String make = text_make.getText();
@@ -263,7 +280,7 @@ public class CarController implements Initializable {
             System.out.println("Invalid field");
         }else{
 
-            String sql = "UPDATE Car SET userID=?, make=?, model=?, year=?, comments=? where year = '" + clickedCar.getYear() + "'";
+            String sql = "UPDATE Car SET userID=?, make=?, model=?, year=?, comments=?, Customer_Key=? where Key=?";
             System.out.println(sql);
             try{
                 Connection con = DBConnector.getConnection();
@@ -273,6 +290,8 @@ public class CarController implements Initializable {
                 preparedStatement.setString(3, model);
                 preparedStatement.setString(4, year);
                 preparedStatement.setString(5, comments);
+                preparedStatement.setLong(6, cust_key);
+                preparedStatement.setLong(7, clickedCar.getpKey());
                 preparedStatement.execute();
                 System.out.println("Update Successful");
                 cars.set(index, clickedCar);

@@ -40,7 +40,7 @@ public class Customer {
         this.zipcode = zipcode;
         this.state = state;
         this.pKey = new SimpleLongProperty(pKey);
-        this.userID = (firstName.charAt(0) + lastName + this.pKey).toLowerCase();
+        this.userID = (this.firstName + this.lastName + this.pKey.getValue()).toLowerCase();
     }
 
     /**
