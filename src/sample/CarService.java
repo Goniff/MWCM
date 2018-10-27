@@ -1,17 +1,43 @@
 package sample;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleLongProperty;
+
 import java.util.Objects;
 
 public class CarService {
 
     private String service_ID;
     private String service_Name;
-    private double price;
+    private DoubleProperty price;
+    private LongProperty pKey;
 
+    /**
+     * Constructor for reading from the DB
+     * @param pkey
+     * @param serviceID
+     * @param serviceName
+     * @param price
+     */
+    public CarService(long pkey, String serviceID, String serviceName, double price){
+        this.service_ID = serviceID;
+        this.service_Name = serviceName;
+        this.price = new SimpleDoubleProperty(price);
+        this.pKey = new SimpleLongProperty(pkey);
+    }
+
+    /**
+     * Constructor for adding CarService to the DB
+     * @param serviceID
+     * @param serviceName
+     * @param price
+     */
     public CarService(String serviceID, String serviceName, double price){
         this.service_ID = serviceID;
         this.service_Name = serviceName;
-        this.price = price;
+        this.price = new SimpleDoubleProperty(price);
     }
 
     public String getService_ID() {
@@ -30,13 +56,6 @@ public class CarService {
         this.service_Name = service_Name;
     }
 
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
 
 
     @Override
@@ -45,13 +64,37 @@ public class CarService {
         return service_Name + " \n$" + price;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CarService carService = (CarService) o;
-        return Objects.equals(getService_ID(), carService.getService_ID()) &&
-                Objects.equals(getService_Name(), carService.getService_Name()) &&
-                Objects.equals(getPrice(), carService.getPrice());
+    public double getPrice() {
+        return price.get();
     }
+
+    public DoubleProperty priceProperty() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price.set(price);
+    }
+
+    public long getpKey() {
+        return pKey.get();
+    }
+
+    public LongProperty pKeyProperty() {
+        return pKey;
+    }
+
+    public void setpKey(long pKey) {
+        this.pKey.set(pKey);
+    }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        CarService carService = (CarService) o;
+//        return Objects.equals(getService_ID(), carService.getService_ID()) &&
+//                Objects.equals(getService_Name(), carService.getService_Name()) &&
+//                Objects.equals(getPrice(), carService.getPrice());
+//    }
 }

@@ -233,11 +233,13 @@ public class CarServiceOrderController implements Initializable {
 
             while (rs.next()) {
                 AutoPart newPart = new AutoPart(
+                        rs.getLong("Key"),
+                        rs.getLong("CarService_Key"),
                         rs.getString("id"),
                         rs.getString("name"),
-                        rs.getString("quantity"),
-                        rs.getString("price"),
-                        rs.getString("category"));
+                        rs.getLong("quantity"),
+                        rs.getDouble("price"),
+                        rs.getString("Category"));
                 System.out.println(newPart.getName());
                 autoParts.add(newPart);
             }
@@ -377,7 +379,7 @@ public class CarServiceOrderController implements Initializable {
             price = carServiceList.getSelectionModel().getSelectedItem().getPrice();
         }
         else {
-            Double partsPrice = Double.parseDouble(autopartList.getSelectionModel().getSelectedItem().getPrice()) * quantity;
+            Double partsPrice = autopartList.getSelectionModel().getSelectedItem().getPrice() * quantity;
             price = carServiceList.getSelectionModel().getSelectedItem().getPrice() + partsPrice;
         }
         System.out.println("Employee key = " + employee_key);
@@ -427,7 +429,7 @@ public class CarServiceOrderController implements Initializable {
             price = carServiceList.getSelectionModel().getSelectedItem().getPrice();
         }
         else {
-            Double partsPrice = Double.parseDouble(autopartList.getSelectionModel().getSelectedItem().getPrice()) * quantity;
+            Double partsPrice = autopartList.getSelectionModel().getSelectedItem().getPrice() * quantity;
             price = carServiceList.getSelectionModel().getSelectedItem().getPrice() + partsPrice;
         }
         String Order_ID = clickedCSO.getOrder_ID();
