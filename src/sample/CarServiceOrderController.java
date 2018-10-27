@@ -261,11 +261,17 @@ public class CarServiceOrderController implements Initializable {
             ResultSet rs = statement.executeQuery("select * from Employee");
 
             while (rs.next()) {
-                Employee newEmployee = new Employee(rs.getString("firstName"),
-                        rs.getString("lastName"), rs.getString("number"),
-                        rs.getString("email"), rs.getString("address"),
-                        rs.getString("city"),rs.getString("zipcode"),
-                        rs.getString("state"), rs.getString("payrate"));
+                Employee newEmployee = new Employee(
+                        rs.getLong("Key"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("number"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getString("city"),
+                        rs.getString("zipcode"),
+                        rs.getString("state"),
+                        rs.getDouble("payrate"));
                 employees.add(newEmployee);
             }
         } catch (SQLException e) {
