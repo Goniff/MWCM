@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.CustomerController">
 
    <left>
       <VBox prefHeight="426.0" prefWidth="170.0" BorderPane.alignment="CENTER">
@@ -162,8 +162,8 @@
                            <children>
                               <Button fx:id="cars_button" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#carWindow" prefHeight="128.0" prefWidth="135.0" text="Cars" />
                               <Button fx:id="employee_button" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#employeeWindow" prefHeight="128.0" prefWidth="135.0" text="Employees" />
-                              <Button fx:id="inventory_button" mnemonicParsing="false" onMouseClicked="#inventoryWindow" text="Inventory" />
-                              <Button fx:id="CarServiceOrder_btn" mnemonicParsing="false" onMouseClicked="#carServiceOrderWindow" text="Car Service Order" />
+                              <Button fx:id="inventory_button" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#inventoryWindow" prefHeight="128.0" prefWidth="135.0" text="Inventory" />
+                              <Button fx:id="CarServiceOrder_btn" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#carServiceOrderWindow" prefHeight="128.0" prefWidth="135.0" text="Car Service Order" />
                            </children>
                            <padding>
                               <Insets top="2.0" />

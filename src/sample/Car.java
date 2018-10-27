@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -10,14 +13,43 @@ public class Car {
     private String model;
     private String year;
     private String comments = "";
+    private LongProperty pKey;
+    private LongProperty customer_key;
 
-    // Constructor
-    public Car(String userID, String make, String model, String year, String comments) {
+    /**
+     * Constructor for adding Cars to the DB
+     * @param userID
+     * @param make
+     * @param model
+     * @param year
+     * @param comments
+     */
+    public Car(long cust_key, String userID, String make, String model, String year, String comments) {
         this.userID = userID;
         this.make = make;
         this.model = model;
         this.year = year;
         this.comments = comments;
+        this.customer_key = new SimpleLongProperty(cust_key);
+    }
+
+    /**
+     * Custructor for reading from the DB
+     * @param userID
+     * @param make
+     * @param model
+     * @param year
+     * @param comments
+     * @param cust_key
+     */
+    public Car(long pKey, long cust_key, String userID, String make, String model, String year, String comments) {
+        this.userID = userID;
+        this.make = make;
+        this.model = model;
+        this.year = year;
+        this.comments = comments;
+        this.pKey = new SimpleLongProperty(pKey);
+        this.customer_key = new SimpleLongProperty(cust_key);
     }
 
     // Auto-generated getters and setters
@@ -67,18 +99,27 @@ public class Car {
         return make + " " + model + " " + year;
     }
 
-//<<<<<<< HEAD
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Car car = (Car) o;
-//        return Objects.equals(getUserID(), car.getUserID()) &&
-//                Objects.equals(getMake(), car.getMake()) &&
-//                Objects.equals(getModel(), car.getModel()) &&
-//                Objects.equals(getYear(), car.getYear()) &&
-//                Objects.equals(getComments(), car.getComments());
-//    }
-//=======
-//>>>>>>> master
+    public long getpKey() {
+        return pKey.get();
+    }
+
+    public LongProperty pKeyProperty() {
+        return pKey;
+    }
+
+    public void setpKey(long pKey) {
+        this.pKey.set(pKey);
+    }
+
+    public long getCustomer_key() {
+        return customer_key.get();
+    }
+
+    public LongProperty customer_keyProperty() {
+        return customer_key;
+    }
+
+    public void setCustomer_key(long customer_key) {
+        this.customer_key.set(customer_key);
+    }
 }

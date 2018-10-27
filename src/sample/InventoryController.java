@@ -45,18 +45,19 @@ public class InventoryController implements Initializable {
     @FXML
     private TextField text_price;
     @FXML
-    private ComboBox<String> category_cb;
+    private ComboBox<CarService> carservice_cb;
     @FXML
     private TextField text_search;
 
     static ObservableList<AutoPart> parts = FXCollections.observableArrayList();
-    private ObservableList<String> category_list = FXCollections.observableArrayList();
-    private String[] categories = {"Accessory","Tire","Engine"};
+    private ObservableList<CarService> carservices = FXCollections.observableArrayList();
+    //private String[] categories = {"Accessory","Tire","Engine"};
 
 
 
 
     public void initialize(URL location, ResourceBundle resources) {
+        parts.clear();
         col_id.setCellValueFactory(new PropertyValueFactory<AutoPart, String>("id"));
         col_name.setCellValueFactory(new PropertyValueFactory<AutoPart, String>("name"));
         col_qty.setCellValueFactory(new PropertyValueFactory<AutoPart, String>("quantity"));
@@ -64,10 +65,14 @@ public class InventoryController implements Initializable {
         col_category.setCellValueFactory(new PropertyValueFactory<AutoPart, String>("category"));
 
         tableView.setItems(getInventory());
-        category_cb.setItems(getCategories());
+        carservice_cb.setItems(getCarServices());
 
     }
 
+    /**
+     * Read Autoparts from the DB.
+     * @return
+     */
     public ObservableList<AutoPart> getInventory(){
         try {
             Connection con = DBConnector.getConnection();
@@ -75,9 +80,14 @@ public class InventoryController implements Initializable {
             ResultSet rs = statement.executeQuery("select * from Inventory");
 
             while (rs.next()) {
-                AutoPart autoPart = new AutoPart(rs.getString("id"),
-                        rs.getString("name"), rs.getString("quantity"),
-                        rs.getString("price"), rs.getString("category"));
+                AutoPart autoPart = new AutoPart(
+                        rs.getLong("Key"),
+                        rs.getLong("CarService_Key"),
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getLong("quantity"),
+                        rs.getDouble("price"),
+                        rs.getString("Category"));
                 parts.add(autoPart);
             }
         } catch (SQLException e) {
@@ -86,11 +96,32 @@ public class InventoryController implements Initializable {
         return parts;
     }
 
-    public ObservableList<String> getCategories(){
-        for (int i = 0; i<categories.length; i++){
-            category_list.add(categories[i]);
+    /**
+     * Read Car Services from the DB
+     * @return
+     */
+    public ObservableList<CarService> getCarServices(){
+//        for (int i = 0; i<categories.length; i++){
+//            carservices.add(categories[i]);
+//        }
+//        return carservices;
+        try {
+            Connection con = DBConnector.getConnection();
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery("select * from CarService");
+
+            while (rs.next()) {
+                CarService carservice = new CarService(
+                        rs.getLong("Key"),
+                        rs.getString("Service_ID"),
+                        rs.getString("Service_Name"),
+                        rs.getDouble("Price"));
+                carservices.add(carservice);
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
-        return category_list;
+        return carservices;
     }
     /*
        Creates AutoPart object and adds it to database and refreshes the table with the new AutoPart added
@@ -100,32 +131,63 @@ public class InventoryController implements Initializable {
     public void addPart(ActionEvent actionEvent) {
         String id = text_id.getText();
         String name = text_name.getText();
-        String quantity = text_qty.getText();
-        String price = text_price.getText();
-        String category = category_cb.getSelectionModel().getSelectedItem();
+        String stringquantity = text_qty.getText();
+        String stringprice = text_price.getText();
 
+        CarService carservice = carservice_cb.getSelectionModel().getSelectedItem();
+        long cs_key;
+        String category;
+        try {
+            cs_key = carservice.getpKey();
+            category = carservice.getService_ID();
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            cs_key = 1;
+            category = "Service was not selected.";
+        }
 
-        if (id.length() == 0 || name.length() == 0 || quantity.length() == 0 || price.length() == 0
-                || category.length() == 0)  {
+        double price;
+        try{
+            price = Double.parseDouble(text_price.getText());
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            price = 0.0;
+        }
+
+        long quantity;
+        try{
+            quantity = Long.parseLong(text_qty.getText());
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            quantity = 0;
+        }
+
+        if (id.length() == 0 || name.length() == 0 || stringquantity.length() == 0 || stringprice.length() == 0
+                || carservice == null)  {
             System.out.println("One or more fields encountered and error");
         } else {
-            AutoPart autoPart = new AutoPart(id, name, quantity, price, category);
-            parts.add(autoPart);
-            String sql = "INSERT INTO Inventory(id,name,quantity,price,category)  VALUES(?,?,?,?,?)";
+            //AutoPart autoPart = new AutoPart(id, name, quantity, price, carservice);
+            //parts.add(autoPart);
+            String sql = "INSERT INTO Inventory(id,name,quantity,price,CarService_Key,Category)  VALUES(?,?,?,?,?,?)";
             try {
                 Connection con = DBConnector.getConnection();
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
                 preparedStatement.setString(1, id);
                 preparedStatement.setString(2, name);
-                preparedStatement.setString(3, quantity);
-                preparedStatement.setString(4, price);
-                preparedStatement.setString(5, category);
+                preparedStatement.setLong(3, quantity);
+                preparedStatement.setDouble(4, price);
+                preparedStatement.setLong(5, cs_key);
+                preparedStatement.setString(6, category);
                 preparedStatement.execute();
                 System.out.println("Part successfully added");
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
             }
         }
+        refreshTable();
     }
     /*
    Updates the employee the user currently has selected on the table with the new information in the text fields
@@ -135,26 +197,59 @@ public class InventoryController implements Initializable {
     public void updatePart(ActionEvent actionEvent) {
         AutoPart clickedPart = tableView.getSelectionModel().getSelectedItem();
         int index = tableView.getSelectionModel().getSelectedIndex();
+        long key = clickedPart.getpKey();
         String id = text_id.getText();
         String name = text_name.getText();
-        String quantity = text_qty.getText();
-        String price = text_price.getText();
-        String category = category_cb.getSelectionModel().getSelectedItem();
+        String stringquantity = text_qty.getText();
+        String stringprice = text_price.getText();
 
-        if (id.length() == 0 || name.length() == 0 || quantity.length() == 0 || price.length() == 0
+        CarService carservice = carservice_cb.getSelectionModel().getSelectedItem();
+        long cs_key;
+        String category;
+        try {
+            cs_key = carservice.getpKey();
+            category = carservice.getService_ID();
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            cs_key = 1;
+            category = "Service was not selected.";
+        }
+
+        double price;
+        try{
+            price = Double.parseDouble(text_price.getText());
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            price = 0.0;
+        }
+
+        long quantity;
+        try{
+            quantity = Long.parseLong(text_qty.getText());
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            quantity = 0;
+        }
+
+        if (id.length() == 0 || name.length() == 0 || stringquantity.length() == 0 || stringprice.length() == 0
                 || category.length() == 0)  {
             System.out.println("One or more fields encountered and error");
         } else {
-            String sql = "UPDATE Inventory SET id=?, name=?, quantity=?, price=?, category=? where id ='" + clickedPart.getId() + "'";
+            String sql = "UPDATE Inventory SET id=?, name=?, quantity=?, price=?, CarService_Key=?, category=? where Key =?";
             System.out.println(sql);
             try {
                 Connection con = DBConnector.getConnection();
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
                 preparedStatement.setString(1, id);
                 preparedStatement.setString(2, name);
-                preparedStatement.setString(3, quantity);
-                preparedStatement.setString(4, price);
-                preparedStatement.setString(5, category);
+                preparedStatement.setLong(3, quantity);
+                preparedStatement.setDouble(4, price);
+                preparedStatement.setLong(5, cs_key);
+                preparedStatement.setString(6, category);
+                preparedStatement.setLong(7, key);
                 preparedStatement.execute();
                 System.out.println("Update Successful");
                 parts.set(index, clickedPart);
@@ -176,11 +271,11 @@ public class InventoryController implements Initializable {
 
             text_id.setText(clickedPart.getId());
             text_name.setText(clickedPart.getName());
-            text_qty.setText(clickedPart.getQuantity());
-            text_price.setText(clickedPart.getPrice());
-            for (int i = 0; i<category_list.size(); i++){
-                if(clickedPart.getCategory().equals(category_list.get(i))){
-                    category_cb.getSelectionModel().select(categories[i]);
+            text_qty.setText(Long.toString(clickedPart.getQuantity()));
+            text_price.setText(Double.toString(clickedPart.getPrice()));
+            for (int i = 0; i< carservices.size(); i++){
+                if(clickedPart.getCarService_Key() == (carservices.get(i).getpKey())){
+                    carservice_cb.getSelectionModel().select(i);
                 }
             }
         }
@@ -192,10 +287,12 @@ public class InventoryController implements Initializable {
 */
     public void deletePart(ActionEvent actionEvent) {
         AutoPart clickedPart = tableView.getSelectionModel().getSelectedItem();
-        String sql = "DELETE FROM Inventory where id = '" + clickedPart.getId() + "'";
+        long key = clickedPart.getpKey();
+        String sql = "DELETE FROM Inventory where Key = ?";
         try {
             Connection con = DBConnector.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setLong(1, key);
             preparedStatement.execute();
             System.out.println("Delete Successful");
             refreshTable();
@@ -203,7 +300,7 @@ public class InventoryController implements Initializable {
             text_name.clear();
             text_qty.clear();
             text_price.clear();
-            category_cb.valueProperty().set(null);
+            carservice_cb.valueProperty().set(null);
 
 
         } catch (SQLException e) {
@@ -223,9 +320,14 @@ public class InventoryController implements Initializable {
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery("select * from Inventory");
             while (rs.next()) {
-                AutoPart newPart = new AutoPart(rs.getString("id"),
-                        rs.getString("name"), rs.getString("quantity"),
-                        rs.getString("price"), rs.getString("category"));
+                AutoPart newPart = new AutoPart(
+                        rs.getLong("Key"),
+                        rs.getLong("CarService_Key"),
+                        rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getLong("quantity"),
+                        rs.getDouble("price"),
+                        rs.getString("Category"));
                 parts.add(newPart);
             }
         } catch (SQLException e) {
@@ -239,30 +341,30 @@ public class InventoryController implements Initializable {
 */
     FilteredList filter = new FilteredList(parts, e->true);
     public void searchPart(KeyEvent event) {
-        text_search.textProperty().addListener(((observable, oldValue, newValue) -> {
-            filter.setPredicate((Predicate<? super AutoPart>) part -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                } else {
-                    String lowerCaseFilter = newValue.toLowerCase();
-                    if (part.getId().toLowerCase().contains(lowerCaseFilter)) {
-                        return true;
-                    } else if (part.getName().toLowerCase().contains(lowerCaseFilter)) {
-                        return true;
-                    } else if (part.getQuantity().toLowerCase().contains(lowerCaseFilter)) {
-                        return true;
-                    } else if (part.getPrice().contains(lowerCaseFilter)) {
-                        return true;
-                    } else if (part.getCategory().toLowerCase().contains(lowerCaseFilter)) {
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            SortedList<AutoPart> sortedDatabase = new SortedList<>(filter);
-            sortedDatabase.comparatorProperty().bind(tableView.comparatorProperty());
-            tableView.setItems(sortedDatabase);
-        }));
+//        text_search.textProperty().addListener(((observable, oldValue, newValue) -> {
+//            filter.setPredicate((Predicate<? super AutoPart>) part -> {
+//                if (newValue == null || newValue.isEmpty()) {
+//                    return true;
+//                } else {
+//                    String lowerCaseFilter = newValue.toLowerCase();
+//                    if (part.getId().toLowerCase().contains(lowerCaseFilter)) {
+//                        return true;
+//                    } else if (part.getName().toLowerCase().contains(lowerCaseFilter)) {
+//                        return true;
+//                    } else if (part.getQuantity().toLowerCase().contains(lowerCaseFilter)) {
+//                        return true;
+//                    } else if (part.getPrice().contains(lowerCaseFilter)) {
+//                        return true;
+//                    } else if (part.getCategory().toLowerCase().contains(lowerCaseFilter)) {
+//                        return true;
+//                    }
+//                    return false;
+//                }
+//            });
+//            SortedList<AutoPart> sortedDatabase = new SortedList<>(filter);
+//            sortedDatabase.comparatorProperty().bind(tableView.comparatorProperty());
+//            tableView.setItems(sortedDatabase);
+//        }));
     }
 
 

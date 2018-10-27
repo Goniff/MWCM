@@ -103,11 +103,17 @@ public class EmployeeController implements Initializable {
             ResultSet rs = statement.executeQuery("select * from Employee");
 
             while (rs.next()) {
-                Employee newEmployee = new Employee(rs.getString("firstName"),
-                        rs.getString("lastName"), rs.getString("number"),
-                        rs.getString("email"), rs.getString("address"),
-                        rs.getString("city"),rs.getString("zipcode"),
-                        rs.getString("state"), rs.getString("payrate"));
+                Employee newEmployee = new Employee(
+                        rs.getLong("Key"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("number"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getString("city"),
+                        rs.getString("zipcode"),
+                        rs.getString("state"),
+                        rs.getDouble("payrate"));
                 employees.add(newEmployee);
             }
         } catch (SQLException e) {
@@ -142,18 +148,27 @@ public class EmployeeController implements Initializable {
         String city = text_city.getText();
         String zipcode = text_zipcode.getText();
         String state = states_cb.getSelectionModel().getSelectedItem();
-        String payrate = text_payrate.getText();
+        String stringPayrate = text_payrate.getText();
+        // attempt to parse payrate into a double
+        double payrate;
+        try{
+            payrate = Double.parseDouble(text_payrate.getText());
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            payrate = 0.0;
+        }
 
         if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 || email.length() == 0
                 || address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0
-                || payrate.length() == 0) {
+                || stringPayrate.length() == 0) {
             if (number.length() < 10) {
                 System.out.println("Invalid number");
             }
             System.out.println("One or more fields encountered and error");
         } else {
-            Employee emp = new Employee(firstName, lastName, number, email, address, city, zipcode, state, payrate);
-            employees.add(emp);
+            //Employee emp = new Employee(firstName, lastName, number, email, address, city, zipcode, state, payrate);
+            //employees.add(emp);
             String sql = "INSERT INTO Employee(firstName,lastName,number,email,address,city,zipcode,state,payrate)  VALUES(?,?,?,?,?,?,?,?,?)";
             try {
                 Connection con = DBConnector.getConnection();
@@ -166,7 +181,7 @@ public class EmployeeController implements Initializable {
                 preparedStatement.setString(6, city);
                 preparedStatement.setString(7, zipcode);
                 preparedStatement.setString(8, state);
-                preparedStatement.setString(9, payrate);
+                preparedStatement.setDouble(9, payrate);
                 preparedStatement.execute();
                 addedPopup();
 
@@ -174,6 +189,7 @@ public class EmployeeController implements Initializable {
                 System.err.println(e.getMessage());
             }
         }
+        refreshTable();
     }
 
     /*
@@ -197,7 +213,7 @@ public class EmployeeController implements Initializable {
                     states_cb.getSelectionModel().select(states[i]);
                 }
             }
-            text_payrate.setText(clickedEmployee.getPayrate());
+            text_payrate.setText(Double.toString(clickedEmployee.getPayrate()));
         }
     }
 
@@ -217,18 +233,28 @@ public class EmployeeController implements Initializable {
         String city = text_city.getText();
         String zipcode = text_zipcode.getText();
         String state = states_cb.getSelectionModel().getSelectedItem();
-        String payrate = text_payrate.getText();
+        String stringPayrate = text_payrate.getText();
+        // attempt to parse payrate into a double
+        double payrate;
+        try{
+            payrate = Double.parseDouble(text_payrate.getText());
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+            payrate = 0.0;
+        }
+        long key = clickedEmployee.getpKey();
 
         if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 || email.length() == 0
                 || address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0
-                || payrate.length() == 0) {
+                || stringPayrate.length() == 0) {
             if (number.length() < 10) {
                 System.out.println("Invalid number");
             }
             System.out.println("One or more fields encountered and error");
         } else {
             String sql = "UPDATE Employee SET firstName=?, lastName=?, number=?, email=?, address=?, city=?, zipcode=?," +
-                    " state=?, payrate=? where email ='" + clickedEmployee.getEmailAddress() + "'";
+                    " state=?, payrate=? where Key=?";
             System.out.println(sql);
             try {
                 Connection con = DBConnector.getConnection();
@@ -241,7 +267,8 @@ public class EmployeeController implements Initializable {
                 preparedStatement.setString(6, city);
                 preparedStatement.setString(7, zipcode);
                 preparedStatement.setString(8, state);
-                preparedStatement.setString(9, payrate);
+                preparedStatement.setDouble(9, payrate);
+                preparedStatement.setLong(10, key);
                 preparedStatement.execute();
                 System.out.println("Update Successful");
                 employees.set(index, clickedEmployee);
@@ -262,10 +289,13 @@ public class EmployeeController implements Initializable {
     */
     public void deleteEmployee() {
         Employee clickedEmployee = employeeTableView.getSelectionModel().getSelectedItem();
-        String sql = "DELETE FROM Employee where email = '" + clickedEmployee.getEmailAddress() + "'";
+        //String sql = "DELETE FROM Employee where email = '" + clickedEmployee.getEmailAddress() + "'";
+        String sql = "DELETE FROM Employee where Key=?";
+        long key = clickedEmployee.getpKey();
         try {
             Connection con = DBConnector.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setLong(1, key);
             preparedStatement.execute();
             System.out.println("Delete Successful");
             refreshTable();
@@ -296,11 +326,17 @@ public class EmployeeController implements Initializable {
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery("select * from Employee");
             while (rs.next()) {
-                Employee newEmployee = new Employee(rs.getString("firstName"),
-                        rs.getString("lastName"), rs.getString("number"),
-                        rs.getString("email"), rs.getString("address"),
-                        rs.getString("city"), rs.getString("zipcode"),
-                        rs.getString("state"), rs.getString("payrate"));
+                Employee newEmployee = new Employee(
+                        rs.getLong("Key"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
+                        rs.getString("number"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getString("city"),
+                        rs.getString("zipcode"),
+                        rs.getString("state"),
+                        rs.getDouble("payrate"));
                 employees.add(newEmployee);
             }
         } catch (SQLException e) {
@@ -384,7 +420,4 @@ public class EmployeeController implements Initializable {
             System.err.println(e);
         }
     }
-
-
-
 }

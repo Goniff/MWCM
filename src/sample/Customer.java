@@ -1,8 +1,12 @@
 package sample;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
+
 import java.util.Objects;
 import java.util.UUID;
 
 public class Customer {
+    private LongProperty pKey;
     private String firstName;
     private String lastName;
     private String number;
@@ -13,8 +17,20 @@ public class Customer {
     private String state;
     private String userID;
 
-    // Constructor
-    public Customer(String firstName, String lastName, String number, String emailAddress, String address, String city, String zipcode, String state) {
+    /**
+     * Constructor for reading from DB
+     * @param pKey
+     * @param firstName
+     * @param lastName
+     * @param number
+     * @param emailAddress
+     * @param address
+     * @param city
+     * @param zipcode
+     * @param state
+     */
+    public Customer(long pKey, String firstName, String lastName, String number,
+                    String emailAddress, String address, String city, String zipcode, String state) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.number = number;
@@ -23,10 +39,46 @@ public class Customer {
         this.city = city;
         this.zipcode = zipcode;
         this.state = state;
-        userID = (firstName.charAt(0) + lastName + number.charAt(0)+ number.charAt(number.length()-1)).toLowerCase();
+        this.pKey = new SimpleLongProperty(pKey);
+        this.userID = (this.firstName + this.lastName + this.pKey.getValue()).toLowerCase();
+    }
+
+    /**
+     * Constructor for adding a new Customer to the DB
+     * @param firstName
+     * @param lastName
+     * @param number
+     * @param emailAddress
+     * @param address
+     * @param city
+     * @param zipcode
+     * @param state
+     */
+    public Customer(String firstName, String lastName, String number,
+                    String emailAddress, String address, String city, String zipcode, String state) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.number = number;
+        this.emailAddress = emailAddress;
+        this.address = address;
+        this.city = city;
+        this.zipcode = zipcode;
+        this.state = state;
     }
 
     // Auto-generated getters and setters
+    public final LongProperty getpKey() {
+        return pKey;
+    }
+
+    public final void setpKey(long pKey) {
+        this.pKey.set(pKey);
+    }
+
+    public LongProperty pKeyProperty(){
+        return pKey;
+    }
+
     public String getFirstName() {
         return firstName;
     }

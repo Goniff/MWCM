@@ -33,7 +33,7 @@
                         <Font size="15.0" />
                     </font>
                 </Label>
-                <GridPane prefHeight="175.0" prefWidth="166.0">
+                <GridPane prefHeight="224.0" prefWidth="166.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="127.0" minWidth="10.0" prefWidth="127.0" />
                     </columnConstraints>
@@ -48,7 +48,7 @@
                     <children>
                   <ComboBox fx:id="customerList" onAction="#selectCustomer" prefWidth="150.0" promptText="Customer" />
                   <ComboBox fx:id="carList" prefWidth="150.0" promptText="Car" GridPane.rowIndex="1" />
-                  <ComboBox fx:id="carServiceList" onAction="#selectCarService" prefWidth="150.0" promptText="Car Service" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="carServiceList" onAction="#selectCarService" prefHeight="44.0" prefWidth="127.0" promptText="Car Service" GridPane.rowIndex="2" />
                   <ComboBox fx:id="autopartList" prefWidth="150.0" promptText="Service Part" GridPane.rowIndex="4" />
                   <ComboBox fx:id="employeeList" prefWidth="150.0" promptText="Employee" GridPane.rowIndex="3" />
                   <TextField fx:id="text_quantity" promptText="Part Quantity" GridPane.rowIndex="5" />

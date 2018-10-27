@@ -1,5 +1,10 @@
 package sample;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleLongProperty;
+
 import java.util.Objects;
 
 public class Employee {
@@ -12,9 +17,24 @@ public class Employee {
     private String zipcode;
     private String state;
     private String userID;
-    private String payrate;
+    private LongProperty pKey;
+    private DoubleProperty payrate;
 
-    public Employee(String firstName, String lastName, String number, String emailAddress, String address, String city, String zipcode, String state, String payrate) {
+    /**
+     * Constructor for reading from the DB
+     * @param pkey
+     * @param firstName
+     * @param lastName
+     * @param number
+     * @param emailAddress
+     * @param address
+     * @param city
+     * @param zipcode
+     * @param state
+     * @param payrate
+     */
+    public Employee(long pkey, String firstName, String lastName, String number, String emailAddress, String address,
+                    String city, String zipcode, String state, double payrate) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.number = number;
@@ -23,8 +43,34 @@ public class Employee {
         this.city = city;
         this.zipcode = zipcode;
         this.state = state;
-        this.payrate = payrate;
-        userID = (firstName.charAt(0) + lastName + number.charAt(0)+ number.charAt(number.length()-1)).toLowerCase();
+        this.payrate = new SimpleDoubleProperty(payrate);
+        this.pKey = new SimpleLongProperty(pkey);
+        this.userID = (firstName + lastName + this.pKey).toLowerCase();
+    }
+
+    /**
+     * Constructor for adding employee to the DB
+     * @param firstName
+     * @param lastName
+     * @param number
+     * @param emailAddress
+     * @param address
+     * @param city
+     * @param zipcode
+     * @param state
+     * @param payrate
+     */
+    public Employee(String firstName, String lastName, String number, String emailAddress, String address,
+                    String city, String zipcode, String state, double payrate) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.number = number;
+        this.emailAddress = emailAddress;
+        this.address = address;
+        this.city = city;
+        this.zipcode = zipcode;
+        this.state = state;
+        this.payrate = new SimpleDoubleProperty(payrate);
     }
 
     public String getFirstName() {
@@ -99,14 +145,6 @@ public class Employee {
         this.userID = userID;
     }
 
-    public String getPayrate() {
-        return payrate;
-    }
-
-    public void setPayrate(String payrate) {
-        this.payrate = payrate;
-    }
-
     @Override
     // Overridden toString method used for displaying the customer's name in a dropdown menu
     public String toString() {
@@ -123,5 +161,29 @@ public class Employee {
                 Objects.equals(getNumber(), employee.getNumber()) &&
                 Objects.equals(getEmailAddress(), employee.getEmailAddress()) &&
                 Objects.equals(getAddress(), employee.getAddress());
+    }
+
+    public long getpKey() {
+        return pKey.get();
+    }
+
+    public LongProperty pKeyProperty() {
+        return pKey;
+    }
+
+    public void setpKey(long pKey) {
+        this.pKey.set(pKey);
+    }
+
+    public double getPayrate() {
+        return payrate.get();
+    }
+
+    public DoubleProperty payrateProperty() {
+        return payrate;
+    }
+
+    public void setPayrate(double payrate) {
+        this.payrate.set(payrate);
     }
 }
