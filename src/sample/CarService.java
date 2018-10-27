@@ -61,7 +61,7 @@ public class CarService {
     @Override
     // Overridden toString method used for displaying the customer's name in a dropdown menu
     public String toString() {
-        return service_Name + " \n$" + price;
+        return service_Name + " \n$" + price.getValue();
     }
 
     public double getPrice() {

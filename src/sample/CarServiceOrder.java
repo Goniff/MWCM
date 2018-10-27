@@ -8,43 +8,79 @@ public class CarServiceOrder {
 
     private LongProperty pKey;
     private LongProperty Employee_Key;
+    private LongProperty Customer_Key;
+    private LongProperty Car_Key;
+    private LongProperty CarService_Key;
+    private LongProperty Inventory_Key;
     private String Customer_ID;
     private String Car_ID;
     private String Service_ID;
     private String Part_ID;
     private double Price;
-    private String Comments = "";
-    private String Order_ID;
+    private String Comments;
 
-    // Constructor for adding to DB
-    public CarServiceOrder(String cust_id, String car_id, String service_id, String part_ID, double price,
-                           String comments, long emp_key){
+    /**
+     * Constructor for adding CSOs to the DB
+     * @param emp_key
+     * @param cust_key
+     * @param car_key
+     * @param cs_key
+     * @param inv_key
+     * @param cust_id
+     * @param car_id
+     * @param service_id
+     * @param part_ID
+     * @param price
+     * @param comments
+     */
+    public CarServiceOrder(long emp_key, long cust_key, long car_key, long cs_key, long inv_key, String cust_id,
+                           String car_id, String service_id, String part_ID, double price, String comments){
+        this.Employee_Key = new SimpleLongProperty(emp_key);
+        this.Customer_Key = new SimpleLongProperty(cust_key);
+        this.Car_Key = new SimpleLongProperty(car_key);
+        this.CarService_Key = new SimpleLongProperty(cs_key);
+        this.Inventory_Key = new SimpleLongProperty(inv_key);
         this.Customer_ID = cust_id;
         this.Car_ID = car_id;
         this.Service_ID = service_id;
         this.Part_ID = part_ID;
         this.Price = price;
         this.Comments = comments;
-        this.Employee_Key = new SimpleLongProperty(emp_key);
-        Order_ID = cust_id + service_id + car_id;
     }
 
-    // Constructor for reading from DB
-    public CarServiceOrder(long pkey, String cust_id, String car_id, String service_id, String part_ID, double price,
-                           String comments, long emp_key){
+    /**
+     * Constructor for reading from DB
+     * @param pkey
+     * @param emp_key
+     * @param cust_key
+     * @param car_key
+     * @param cs_key
+     * @param inv_key
+     * @param cust_id
+     * @param car_id
+     * @param service_id
+     * @param part_ID
+     * @param price
+     * @param comments
+     */
+    public CarServiceOrder(long pkey, long emp_key, long cust_key, long car_key, long cs_key, long inv_key, String cust_id,
+                           String car_id, String service_id, String part_ID, double price, String comments){
         this.pKey = new SimpleLongProperty(pkey);
+        this.Employee_Key = new SimpleLongProperty(emp_key);
+        this.Customer_Key = new SimpleLongProperty(cust_key);
+        this.Car_Key = new SimpleLongProperty(car_key);
+        this.CarService_Key = new SimpleLongProperty(cs_key);
+        this.Inventory_Key = new SimpleLongProperty(inv_key);
         this.Customer_ID = cust_id;
         this.Car_ID = car_id;
         this.Service_ID = service_id;
         this.Part_ID = part_ID;
         this.Price = price;
         this.Comments = comments;
-        this.Employee_Key = new SimpleLongProperty(emp_key);
-        Order_ID = cust_id + service_id + car_id;
     }
 
-    public final LongProperty getpKey() {
-        return pKey;
+    public final long getpKey() {
+        return pKey.get();
     }
 
     public final void setpKey(long pKey) {
@@ -115,6 +151,51 @@ public class CarServiceOrder {
         this.Employee_Key.set(employee_Key);
     }
 
-    public String getOrder_ID() { return Order_ID; }
-}
+    public long getCustomer_Key() {
+        return Customer_Key.get();
+    }
 
+    public LongProperty customer_KeyProperty() {
+        return Customer_Key;
+    }
+
+    public void setCustomer_Key(long customer_Key) {
+        this.Customer_Key.set(customer_Key);
+    }
+
+    public long getCarService_Key() {
+        return CarService_Key.get();
+    }
+
+    public LongProperty carService_KeyProperty() {
+        return CarService_Key;
+    }
+
+    public void setCarService_Key(long carService_Key) {
+        this.CarService_Key.set(carService_Key);
+    }
+
+    public long getInventory_Key() {
+        return Inventory_Key.get();
+    }
+
+    public LongProperty inventory_KeyProperty() {
+        return Inventory_Key;
+    }
+
+    public void setInventory_Key(long inventory_Key) {
+        this.Inventory_Key.set(inventory_Key);
+    }
+
+    public long getCar_Key() {
+        return Car_Key.get();
+    }
+
+    public LongProperty car_KeyProperty() {
+        return Car_Key;
+    }
+
+    public void setCar_Key(long car_Key) {
+        this.Car_Key.set(car_Key);
+    }
+}

@@ -105,6 +105,7 @@ public class CarServiceOrderController implements Initializable {
 
             while (rs.next()) {
                 CarService newService = new CarService(
+                        rs.getLong("Key"),
                         rs.getString("Service_ID"),
                         rs.getString("Service_Name"),
                         rs.getDouble("Price"));
@@ -134,13 +135,17 @@ public class CarServiceOrderController implements Initializable {
             while (rs.next()) {
                 CarServiceOrder newOrder = new CarServiceOrder(
                         rs.getLong("Key"),
+                        rs.getLong("Employee_Key"),
+                        rs.getLong("Customer_Key"),
+                        rs.getLong("Car_Key"),
+                        rs.getLong("CarService_Key"),
+                        rs.getLong("Inventory_Key"),
                         rs.getString("Customer_ID"),
                         rs.getString("Car_ID"),
                         rs.getString("Service_ID"),
                         rs.getString("Part_ID"),
                         rs.getDouble("Price"),
-                        rs.getString("Comments"),
-                        rs.getLong("Employee_Key"));
+                        rs.getString("Comments"));
                 carServiceOrders.add(newOrder);
             }
             rs.close();
@@ -165,6 +170,7 @@ public class CarServiceOrderController implements Initializable {
 
             while (rs.next()) {
                 Customer newCustomer = new Customer(
+                        rs.getLong("Key"),
                         rs.getString("firstName"),
                         rs.getString("lastName"),
                         rs.getString("number"),
@@ -189,12 +195,12 @@ public class CarServiceOrderController implements Initializable {
        precondition: a proper list of car objects must be declared and method must be called through initialize
        postcondition: returns an ObservableList of car objects
     */
-    private ObservableList<Car> getCarList(String custID) {
+    private ObservableList<Car> getCarList(long cust_key) {
         try {
             cars.clear();
             Connection con = DBConnector.getConnection();
-            PreparedStatement statement = con.prepareStatement("select * from Car where userID = ?");
-            statement.setString(1,custID);
+            PreparedStatement statement = con.prepareStatement("select * from Car where Customer_Key = ?");
+            statement.setLong(1,cust_key);
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -223,12 +229,12 @@ public class CarServiceOrderController implements Initializable {
        precondition: a proper list of car objects must be declared and method must be called through initialize
        postcondition: returns an ObservableList of car objects
     */
-    private ObservableList<AutoPart> getAutoPartList(String servID) {
+    private ObservableList<AutoPart> getAutoPartList(long cs_key) {
         try {
             autoParts.clear();
             Connection con = DBConnector.getConnection();
-            PreparedStatement statement = con.prepareStatement("select * from Inventory where category = ?");
-            statement.setString(1,servID);
+            PreparedStatement statement = con.prepareStatement("select * from Inventory where CarService_Key = ?");
+            statement.setLong(1,cs_key);
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {
@@ -285,22 +291,20 @@ public class CarServiceOrderController implements Initializable {
     // Select a customer from the drop down to filter car dropdown
     public void selectCustomer(){
         if (customerList.getSelectionModel().isEmpty()){
-
         }else{
             Customer selectedCustomer = customerList.getSelectionModel().getSelectedItem();
-            String custID = selectedCustomer.getUserID();
-            carList.setItems(getCarList(custID));
+            long cust_key = selectedCustomer.getpKey().getValue();
+            carList.setItems(getCarList(cust_key));
         }
     }
 
     // Select a Car Service from the drop down to filter Service Parts
     public void selectCarService(){
         if (carServiceList.getSelectionModel().isEmpty()){
-
         }else {
             CarService selectedService = carServiceList.getSelectionModel().getSelectedItem();
-            String servID = selectedService.getService_ID();
-            autopartList.setItems(getAutoPartList(servID));
+            long cs_key = selectedService.getpKey();
+            autopartList.setItems(getAutoPartList(cs_key));
         }
     }
 
@@ -347,33 +351,61 @@ public class CarServiceOrderController implements Initializable {
            to display employees
         */
     public void addCarServiceOrder(ActionEvent actionEvent) {
-        String customer_ID = customerList.getSelectionModel().getSelectedItem().getUserID();
-        String car_ID = carList.getSelectionModel().getSelectedItem().getModel();
-        String service_ID = carServiceList.getSelectionModel().getSelectedItem().getService_ID();
-        String part_ID =
-                (autopartList.getSelectionModel().getSelectedItem() == null) ?
-                        "" : autopartList.getSelectionModel().getSelectedItem().getId();
+        Employee employee = employeeList.getSelectionModel().getSelectedItem();
+        Customer customer = customerList.getSelectionModel().getSelectedItem();
+        Car car = carList.getSelectionModel().getSelectedItem();
+        CarService carService = carServiceList.getSelectionModel().getSelectedItem();
+        AutoPart autoPart = autopartList.getSelectionModel().getSelectedItem();
+
         String comments = text_comments.getText();
-        int index = employeeList.getSelectionModel().getSelectedIndex()+1;
 
-        // Fetching employee_key
-        long employee_key = 0;
-        try {
-            Connection con = DBConnector.getConnection();
-            Statement stat = con.createStatement();
-            String sql = "Select * From Employee where Key = '" + index + "'";
-            ResultSet rs = stat.executeQuery(sql);
-            employee_key = rs.getInt("Key");
-            con.close();
-
-        }catch(Exception e){
-            System.err.println(e);
-
+        // Employee Check
+        long emp_key = 0;
+        if (employee != null){
+            emp_key = employee.getpKey();
         }
-        double price;
+
+        // Customer Check
+        long cust_key = 0;
+        String custID = "";
+        if(customer != null){
+            cust_key = customer.getpKey().getValue();
+            custID = customer.getUserID();
+        }
+
+        // Car Check
+        long car_key = 0;
+        String carID = "";
+        if (car != null){
+            car_key = car.getpKey();
+            carID = car.getMake() + car.getModel() + car.getYear() + car_key;
+        }
+
+        // Car Service Check
+        long cs_key = 0;
+        String csID = "";
+        if (carService != null){
+            cs_key = carService.getpKey();
+            csID = carService.getService_ID();
+        }
+
+        // AutoPart Check
+        long inv_key = 0;
+        String partID = "";
+        if (autoPart != null){
+            inv_key = autoPart.getpKey();
+            partID = autoPart.getId();
+        }
+
         // calculate price
+        double price;
         int quantity = 1;
-        quantity = Integer.parseInt(text_quantity.getText());
+        try {
+            quantity = Integer.parseInt(text_quantity.getText());
+        }
+        catch (Exception e){
+            System.err.println(e.getMessage());
+        }
 
         if (autopartList.getSelectionModel().getSelectedItem() == null){
             price = carServiceList.getSelectionModel().getSelectedItem().getPrice();
@@ -382,28 +414,32 @@ public class CarServiceOrderController implements Initializable {
             Double partsPrice = autopartList.getSelectionModel().getSelectedItem().getPrice() * quantity;
             price = carServiceList.getSelectionModel().getSelectedItem().getPrice() + partsPrice;
         }
-        System.out.println("Employee key = " + employee_key);
-        CarServiceOrder cso = new CarServiceOrder(customer_ID, car_ID, service_ID, part_ID, price, comments, employee_key);
-        String Order_ID = cso.getOrder_ID();
-        carServiceOrders.add(cso);
-        String sql =
-                "INSERT INTO CarServiceOrder(Customer_ID,Car_ID,Service_ID,Part_ID,Price,Comments,Employee_Key,Order_ID) VALUES(?,?,?,?,?,?,?,?)";
-        try {
-            Connection con = DBConnector.getConnection();
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setString(1, customer_ID);
-            preparedStatement.setString(2, car_ID);
-            preparedStatement.setString(3, service_ID);
-            preparedStatement.setString(4, part_ID);
-            preparedStatement.setDouble(5, price);
-            preparedStatement.setString(6, comments);
-            preparedStatement.setString(7, Long.toString(employee_key));
-            preparedStatement.setString(8, Order_ID);
-            preparedStatement.execute();
-            refreshTable();
-            //addedPopup();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
+
+
+        if (employee != null && customer != null && car != null && carService != null) {
+            String sql =
+                    "INSERT INTO CarServiceOrder(Employee_Key,Customer_Key,Car_Key,CarService_Key,Inventory_Key," +
+                            "Customer_ID,Car_ID,Service_ID,Part_ID,Price,Comments) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+            try {
+                Connection con = DBConnector.getConnection();
+                PreparedStatement preparedStatement = con.prepareStatement(sql);
+                preparedStatement.setLong(1, emp_key);
+                preparedStatement.setLong(2, cust_key);
+                preparedStatement.setLong(3, car_key);
+                preparedStatement.setLong(4, cs_key);
+                preparedStatement.setLong(5, inv_key);
+                preparedStatement.setString(6, custID);
+                preparedStatement.setString(7, carID);
+                preparedStatement.setString(8, csID);
+                preparedStatement.setString(9, partID);
+                preparedStatement.setDouble(10, price);
+                preparedStatement.setString(11, comments);
+                preparedStatement.execute();
+                refreshTable();
+                //addedPopup();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
         }
     }
     /*
@@ -413,12 +449,53 @@ public class CarServiceOrderController implements Initializable {
  */
     public void updateCarServiceOrder(ActionEvent actionEvent) {
         CarServiceOrder clickedCSO = carServiceOrderTableView.getSelectionModel().getSelectedItem();
+        long cso_key = clickedCSO.getpKey();
         int clickedCSOindex = carServiceOrderTableView.getSelectionModel().getSelectedIndex();
-        String customer_ID = customerList.getSelectionModel().getSelectedItem().getUserID();
-        String car_ID = carList.getSelectionModel().getSelectedItem().getModel();
-        String service_ID = carServiceList.getSelectionModel().getSelectedItem().getService_ID();
-        String part_ID = autopartList.getSelectionModel().getSelectedItem().getId();
+        Employee employee = employeeList.getSelectionModel().getSelectedItem();
+        Customer customer = customerList.getSelectionModel().getSelectedItem();
+        Car car = carList.getSelectionModel().getSelectedItem();
+        CarService carService = carServiceList.getSelectionModel().getSelectedItem();
+        AutoPart autoPart = autopartList.getSelectionModel().getSelectedItem();
 
+        String comments = text_comments.getText();
+
+        // Employee Check
+        long emp_key = 0;
+        if (employee != null){
+            emp_key = employee.getpKey();
+        }
+
+        // Customer Check
+        long cust_key = 0;
+        String custID = "";
+        if(customer != null){
+            cust_key = customer.getpKey().getValue();
+            custID = customer.getUserID();
+        }
+
+        // Car Check
+        long car_key = 0;
+        String carID = "";
+        if (car != null){
+            car_key = car.getpKey();
+            carID = car.getMake() + car.getModel() + car.getYear() + car_key;
+        }
+
+        // Car Service Check
+        long cs_key = 0;
+        String csID = "";
+        if (carService != null){
+            cs_key = carService.getpKey();
+            csID = carService.getService_ID();
+        }
+
+        // AutoPart Check
+        long inv_key = 0;
+        String partID = "";
+        if (autoPart != null){
+            inv_key = autoPart.getpKey();
+            partID = autoPart.getId();
+        }
 
         // calculate price
         double price;
@@ -432,59 +509,52 @@ public class CarServiceOrderController implements Initializable {
             Double partsPrice = autopartList.getSelectionModel().getSelectedItem().getPrice() * quantity;
             price = carServiceList.getSelectionModel().getSelectedItem().getPrice() + partsPrice;
         }
-        String Order_ID = clickedCSO.getOrder_ID();
-        String comments = text_comments.getText();
 
 
-        // Fetching employee_key
-        long employee_key = 0;
-        int index  = employeeList.getSelectionModel().getSelectedIndex()+1;
-        try {
-            Connection con = DBConnector.getConnection();
-            Statement stat = con.createStatement();
-            String sql = "Select * From Employee where Key = '" + index + "'";
-            ResultSet rs = stat.executeQuery(sql);
-            employee_key = rs.getInt("Key");
-            con.close();
-
-        }catch(Exception e){
-            System.err.println(e);
+        if (employee != null && customer != null && car != null && carService != null) {
+            CarServiceOrder cso = new CarServiceOrder(
+                    cso_key,emp_key,cust_key,car_key,cs_key,inv_key,custID,carID,csID,partID,price,comments);
+            String sql =
+                "UPDATE CarServiceOrder SET Employee_Key=?, Customer_Key=?, Car_Key=?,CarService_Key=?, Inventory_Key=?," +
+                        "Customer_ID=?, Car_ID=?, Service_ID=?, Part_ID=?, Price=?, Comments=? where Key =?";
+            try {
+                Connection con = DBConnector.getConnection();
+                PreparedStatement preparedStatement = con.prepareStatement(sql);
+                preparedStatement.setLong(1, emp_key);
+                preparedStatement.setLong(2, cust_key);
+                preparedStatement.setLong(3, car_key);
+                preparedStatement.setLong(4, cs_key);
+                preparedStatement.setLong(5, inv_key);
+                preparedStatement.setString(6, custID);
+                preparedStatement.setString(7, carID);
+                preparedStatement.setString(8, csID);
+                preparedStatement.setString(9, partID);
+                preparedStatement.setDouble(10, price);
+                preparedStatement.setString(11, comments);
+                preparedStatement.setLong(12, cso_key);
+                preparedStatement.execute();
+                System.out.println("Update Successful");
+                carServiceOrders.set(clickedCSOindex, cso);
+                refreshTable();
+                //addedPopup();
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+            }
         }
-
-        CarServiceOrder cso = new CarServiceOrder(customer_ID, car_ID, service_ID, part_ID, price, comments, employee_key);
-        String sql =
-                "UPDATE CarServiceOrder SET Customer_ID =?, Car_ID=?, Service_ID=?, Part_ID=?, Price=?, Comments=?, Employee_Key=?, Order_ID = ? where Order_ID ='" + clickedCSO.getOrder_ID() + "'";
-        try {
-            Connection con = DBConnector.getConnection();
-            PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setString(1, customer_ID);
-            preparedStatement.setString(2, car_ID);
-            preparedStatement.setString(3, service_ID);
-            preparedStatement.setString(4, part_ID);
-            preparedStatement.setDouble(5, price);
-            preparedStatement.setString(6, comments);
-            preparedStatement.setString(7, Long.toString(employee_key));
-            preparedStatement.setString(8, Order_ID);
-            preparedStatement.execute();
-            System.out.println("Update Successful");
-            carServiceOrders.set(clickedCSOindex, cso);
-            refreshTable();
-            //addedPopup();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-
-
-
-
     }
 
+    /**
+     * DELETE FROM DB
+     * @param actionEvent
+     */
     public void deleteCarServiceOrder(ActionEvent actionEvent){
         CarServiceOrder clickedCSO = carServiceOrderTableView.getSelectionModel().getSelectedItem();
-        String sql = "DELETE FROM CarServiceOrder where Order_ID = '" + clickedCSO.getOrder_ID() + "'";
+        long cso_key = clickedCSO.getpKey();
+        String sql = "DELETE FROM CarServiceOrder where Key = ?";
         try {
             Connection con = DBConnector.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setLong(1, cso_key);
             preparedStatement.execute();
             System.out.println("Delete Successful");
             refreshTable();
@@ -513,13 +583,17 @@ public class CarServiceOrderController implements Initializable {
             while (rs.next()) {
                 CarServiceOrder newOrder = new CarServiceOrder(
                         rs.getLong("Key"),
+                        rs.getLong("Employee_Key"),
+                        rs.getLong("Customer_Key"),
+                        rs.getLong("Car_Key"),
+                        rs.getLong("CarService_Key"),
+                        rs.getLong("Inventory_Key"),
                         rs.getString("Customer_ID"),
                         rs.getString("Car_ID"),
                         rs.getString("Service_ID"),
                         rs.getString("Part_ID"),
                         rs.getDouble("Price"),
-                        rs.getString("Comments"),
-                        rs.getLong("Employee_Key"));
+                        rs.getString("Comments"));
                 carServiceOrders.add(newOrder);
             }
             rs.close();
@@ -555,7 +629,7 @@ public class CarServiceOrderController implements Initializable {
                     }
                 }
                 for (int i = 0; i<carServices.size(); i++){
-                    if (carServices.get(i).getService_Name().equals(clickedCSO.getService_ID())){
+                    if (clickedCSO.getCarService_Key() == carServices.get(i).getpKey()){
                         carServiceList.getSelectionModel().select(carServices.get(i));
                     }
                 }
