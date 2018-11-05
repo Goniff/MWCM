@@ -10,10 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -45,6 +42,8 @@ public class EmployeeController implements Initializable {
     private TableColumn<Employee, String> col_state;
     @FXML
     private TableColumn<Employee, String> col_payrate;
+    @FXML
+    private Button payroll_button;
 
 
     @FXML
@@ -365,9 +364,15 @@ public class EmployeeController implements Initializable {
                         return true;
                     } else if (employee.getEmailAddress().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
-                    } else if (employee.getEmailAddress().toLowerCase().contains(lowerCaseFilter)) {
-                        return true;
                     } else if (employee.getAddress().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    } else if (employee.getCity().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    } else if (employee.getZipcode().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    }else if (employee.getState().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    }else if (Double.toString(employee.getPayrate()).toLowerCase().contains(lowerCaseFilter)) {
                         return true;
                     }
                     return false;
@@ -413,6 +418,21 @@ public class EmployeeController implements Initializable {
             Parent root = (Parent)fxmlLoader.load();
             Stage stage = new Stage();
             stage.setTitle("Employee Deleted");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e){
+            System.err.println(e);
+        }
+    }
+
+
+    public void payrollWindow(MouseEvent mouseEvent){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Payroll.fxml"));
+            Parent root = (Parent)fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Payroll");
             stage.setScene(new Scene(root));
             stage.show();
 

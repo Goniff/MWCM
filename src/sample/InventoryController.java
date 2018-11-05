@@ -341,30 +341,30 @@ public class InventoryController implements Initializable {
 */
     FilteredList filter = new FilteredList(parts, e->true);
     public void searchPart(KeyEvent event) {
-//        text_search.textProperty().addListener(((observable, oldValue, newValue) -> {
-//            filter.setPredicate((Predicate<? super AutoPart>) part -> {
-//                if (newValue == null || newValue.isEmpty()) {
-//                    return true;
-//                } else {
-//                    String lowerCaseFilter = newValue.toLowerCase();
-//                    if (part.getId().toLowerCase().contains(lowerCaseFilter)) {
-//                        return true;
-//                    } else if (part.getName().toLowerCase().contains(lowerCaseFilter)) {
-//                        return true;
-//                    } else if (part.getQuantity().toLowerCase().contains(lowerCaseFilter)) {
-//                        return true;
-//                    } else if (part.getPrice().contains(lowerCaseFilter)) {
-//                        return true;
-//                    } else if (part.getCategory().toLowerCase().contains(lowerCaseFilter)) {
-//                        return true;
-//                    }
-//                    return false;
-//                }
-//            });
-//            SortedList<AutoPart> sortedDatabase = new SortedList<>(filter);
-//            sortedDatabase.comparatorProperty().bind(tableView.comparatorProperty());
-//            tableView.setItems(sortedDatabase);
-//        }));
+        text_search.textProperty().addListener(((observable, oldValue, newValue) -> {
+            filter.setPredicate((Predicate<? super AutoPart>) part -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                } else {
+                    String lowerCaseFilter = newValue.toLowerCase();
+                    if (part.getId().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    } else if (part.getName().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    } else if (Long.toString(part.getQuantity()).contains(lowerCaseFilter)) {
+                        return true;
+                    } else if (Double.toString(part.getPrice()).contains(lowerCaseFilter)) {
+                        return true;
+                    } else if (part.getCategory().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    }
+                    return false;
+                }
+            });
+            SortedList<AutoPart> sortedDatabase = new SortedList<>(filter);
+            sortedDatabase.comparatorProperty().bind(tableView.comparatorProperty());
+            tableView.setItems(sortedDatabase);
+        }));
     }
 
 

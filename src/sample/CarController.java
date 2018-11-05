@@ -264,12 +264,12 @@ public class CarController implements Initializable {
     */
     public void updateCar(ActionEvent actionEvent){
         Car clickedCar = carTableView.getSelectionModel().getSelectedItem();
-        Customer selctedCustomer = customerList.getSelectionModel().getSelectedItem();
+        Customer selectedCustomer = customerList.getSelectionModel().getSelectedItem();
         int index = carTableView.getSelectionModel().getSelectedIndex();
         System.out.println("index: " +index);
 
-        String customerID = selctedCustomer.getUserID();
-        long cust_key = selctedCustomer.getpKey().getValue();
+        String customerID = selectedCustomer.getUserID();
+        long cust_key = selectedCustomer.getpKey().getValue();
         System.out.println("Customer ID: " + customerID);
 
         String make = text_make.getText();
