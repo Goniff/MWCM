@@ -68,6 +68,8 @@ public class Controller implements Initializable {
     private Button inventory_button;
     @FXML
     private Button CarServiceOrder_btn;
+    @FXML
+    private Button report_button;
 
     static ObservableList<Customer> customers = FXCollections.observableArrayList();
     private ObservableList<String> state_list = FXCollections.observableArrayList();
@@ -102,6 +104,9 @@ public class Controller implements Initializable {
 
         Image carService = new Image(getClass().getResourceAsStream("../Images/carservices.png"));
         CarServiceOrder_btn.setGraphic(new ImageView(carService));
+
+        Image reports = new Image(getClass().getResourceAsStream("../Images/reports.png"));
+        report_button.setGraphic(new ImageView(reports));
     }
     /*
         Connecting to database and reading Customer objects to populate ObservableList
@@ -398,6 +403,28 @@ public class Controller implements Initializable {
             Parent root = (Parent)fxmlLoader.load();
             Stage stage = new Stage();
             stage.setTitle("Car Service Orders");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e){
+            System.err.println(e);
+        }
+    }
+
+
+    /*
+    Opens the Report window which displays all the Orders in the system's database when the user
+    clicks the Report button
+    precondition: the customer page must be running and displaying properly
+    postcondition: a new window is opened with methods and information pertaining to Report objects
+    and the ReportController
+ */
+    public void reportWindow(MouseEvent mouseEvent){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Report.fxml"));
+            Parent root = (Parent)fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Reports");
             stage.setScene(new Scene(root));
             stage.show();
 

@@ -11,16 +11,15 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -38,6 +37,8 @@ public class CarServiceOrderController implements Initializable {
     private TableColumn<CarServiceOrder, String> col_car;
     @FXML
     private TableColumn<CarServiceOrder, Double> col_price;
+    @FXML
+    private TableColumn<CarServiceOrder, String> col_date;
     @FXML
     private TableColumn<CarServiceOrder, String> col_comments;
 
@@ -57,6 +58,10 @@ public class CarServiceOrderController implements Initializable {
     private TextField text_comments;
     @FXML
     private TextField text_quantity;
+    @FXML
+    private DatePicker text_date;
+    @FXML
+    private TextField text_discount;
 
     // Track various things
     private ObservableList<CarServiceOrder> carServiceOrders = FXCollections.observableArrayList();
@@ -84,6 +89,7 @@ public class CarServiceOrderController implements Initializable {
         col_customer.setCellValueFactory(new PropertyValueFactory<CarServiceOrder, String>("Customer_ID"));
         col_car.setCellValueFactory(new PropertyValueFactory<CarServiceOrder, String>("Car_ID"));
         col_price.setCellValueFactory(new PropertyValueFactory<CarServiceOrder, Double>("Price"));
+        col_date.setCellValueFactory(new PropertyValueFactory<CarServiceOrder,String>("date"));
         col_comments.setCellValueFactory(new PropertyValueFactory<CarServiceOrder, String>("Comments"));
 
         carServiceOrderTableView.setItems(getCarServiceOrderList());
@@ -145,7 +151,9 @@ public class CarServiceOrderController implements Initializable {
                         rs.getString("Service_ID"),
                         rs.getString("Part_ID"),
                         rs.getDouble("Price"),
-                        rs.getString("Comments"));
+                        rs.getString("Comments"),
+                        rs.getString("date"),
+                        rs.getInt("part_quantity"));
                 carServiceOrders.add(newOrder);
             }
             rs.close();
@@ -332,6 +340,8 @@ public class CarServiceOrderController implements Initializable {
                                 return true;
                             } else if (cso.getComments().toLowerCase().contains(lowerCaseFilter)) {
                                 return true;
+                            } else if (cso.getDate().toLowerCase().contains(lowerCaseFilter)) {
+                                return true;
                             }
                             return false;
                         }
@@ -356,8 +366,20 @@ public class CarServiceOrderController implements Initializable {
         Car car = carList.getSelectionModel().getSelectedItem();
         CarService carService = carServiceList.getSelectionModel().getSelectedItem();
         AutoPart autoPart = autopartList.getSelectionModel().getSelectedItem();
+        int part_quantity = 0;
+        if(text_quantity.getLength() > 0) {
+            part_quantity = Integer.valueOf(text_quantity.getText());
+        }
+
+
+        Double discount = 0.0;
+        if(text_discount.getLength() > 0) {
+            discount = Double.valueOf(text_discount.getText());
+        }
+
 
         String comments = text_comments.getText();
+        String date = text_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
 
         // Employee Check
         long emp_key = 0;
@@ -378,7 +400,7 @@ public class CarServiceOrderController implements Initializable {
         String carID = "";
         if (car != null){
             car_key = car.getpKey();
-            carID = car.getMake() + car.getModel() + car.getYear() + car_key;
+            carID = car.getMake() +" "+ car.getModel()+ " " + car.getYear()+ " " + car_key;
         }
 
         // Car Service Check
@@ -408,18 +430,20 @@ public class CarServiceOrderController implements Initializable {
         }
 
         if (autopartList.getSelectionModel().getSelectedItem() == null){
-            price = carServiceList.getSelectionModel().getSelectedItem().getPrice();
+            price = carServiceList.getSelectionModel().getSelectedItem().getPrice() - discount;
         }
         else {
             Double partsPrice = autopartList.getSelectionModel().getSelectedItem().getPrice() * quantity;
-            price = carServiceList.getSelectionModel().getSelectedItem().getPrice() + partsPrice;
+            price = carServiceList.getSelectionModel().getSelectedItem().getPrice() + partsPrice - discount;
         }
+
+
 
 
         if (employee != null && customer != null && car != null && carService != null) {
             String sql =
                     "INSERT INTO CarServiceOrder(Employee_Key,Customer_Key,Car_Key,CarService_Key,Inventory_Key," +
-                            "Customer_ID,Car_ID,Service_ID,Part_ID,Price,Comments) VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+                            "Customer_ID,Car_ID,Service_ID,Part_ID,Price,Comments,date, part_quantity) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
             try {
                 Connection con = DBConnector.getConnection();
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -434,6 +458,8 @@ public class CarServiceOrderController implements Initializable {
                 preparedStatement.setString(9, partID);
                 preparedStatement.setDouble(10, price);
                 preparedStatement.setString(11, comments);
+                preparedStatement.setString(12,date);
+                preparedStatement.setInt(13,part_quantity);
                 preparedStatement.execute();
                 refreshTable();
                 //addedPopup();
@@ -456,8 +482,17 @@ public class CarServiceOrderController implements Initializable {
         Car car = carList.getSelectionModel().getSelectedItem();
         CarService carService = carServiceList.getSelectionModel().getSelectedItem();
         AutoPart autoPart = autopartList.getSelectionModel().getSelectedItem();
-
+        String date  = text_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
         String comments = text_comments.getText();
+
+        int part_quantity = 0;
+        if(text_quantity.getLength() > 0) {
+             part_quantity = Integer.valueOf(text_quantity.getText());
+        }
+        Double discount = 0.0;
+        if(text_discount.getLength() > 0) {
+            discount = Double.valueOf(text_discount.getText());
+        }
 
         // Employee Check
         long emp_key = 0;
@@ -503,20 +538,20 @@ public class CarServiceOrderController implements Initializable {
         quantity = Integer.parseInt(text_quantity.getText());
 
         if (autopartList.getSelectionModel().getSelectedItem() == null){
-            price = carServiceList.getSelectionModel().getSelectedItem().getPrice();
+            price = carServiceList.getSelectionModel().getSelectedItem().getPrice() - discount;
         }
         else {
             Double partsPrice = autopartList.getSelectionModel().getSelectedItem().getPrice() * quantity;
-            price = carServiceList.getSelectionModel().getSelectedItem().getPrice() + partsPrice;
+            price = carServiceList.getSelectionModel().getSelectedItem().getPrice() + partsPrice - discount;
         }
 
 
         if (employee != null && customer != null && car != null && carService != null) {
             CarServiceOrder cso = new CarServiceOrder(
-                    cso_key,emp_key,cust_key,car_key,cs_key,inv_key,custID,carID,csID,partID,price,comments);
+                    cso_key,emp_key,cust_key,car_key,cs_key,inv_key,custID,carID,csID,partID,price,comments,date,part_quantity);
             String sql =
                 "UPDATE CarServiceOrder SET Employee_Key=?, Customer_Key=?, Car_Key=?,CarService_Key=?, Inventory_Key=?," +
-                        "Customer_ID=?, Car_ID=?, Service_ID=?, Part_ID=?, Price=?, Comments=? where Key =?";
+                        "Customer_ID=?, Car_ID=?, Service_ID=?, Part_ID=?, Price=?, Comments=?, Date=?, part_quantity=? where Key =?";
             try {
                 Connection con = DBConnector.getConnection();
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -531,7 +566,9 @@ public class CarServiceOrderController implements Initializable {
                 preparedStatement.setString(9, partID);
                 preparedStatement.setDouble(10, price);
                 preparedStatement.setString(11, comments);
-                preparedStatement.setLong(12, cso_key);
+                preparedStatement.setString(12,date);
+                preparedStatement.setInt(13,part_quantity);
+                preparedStatement.setLong(14, cso_key);
                 preparedStatement.execute();
                 System.out.println("Update Successful");
                 carServiceOrders.set(clickedCSOindex, cso);
@@ -565,6 +602,11 @@ public class CarServiceOrderController implements Initializable {
             autopartList.valueProperty().set(null);
             cars.clear();
             autoParts.clear();
+            text_quantity.clear();;
+            text_discount.clear();
+            text_comments.clear();
+            text_date.setValue(null);
+
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
@@ -593,7 +635,9 @@ public class CarServiceOrderController implements Initializable {
                         rs.getString("Service_ID"),
                         rs.getString("Part_ID"),
                         rs.getDouble("Price"),
-                        rs.getString("Comments"));
+                        rs.getString("Comments"),
+                        rs.getString("date"),
+                        rs.getInt("part_quantity"));
                 carServiceOrders.add(newOrder);
             }
             rs.close();
@@ -624,7 +668,7 @@ public class CarServiceOrderController implements Initializable {
                     }
                 }
                 for (int i = 0; i<cars.size(); i++){
-                    if (cars.get(i).getModel().contains(clickedCSO.getCar_ID())){
+                    if (clickedCSO.getCar_ID().contains(cars.get(i).getModel())){
                         carList.getSelectionModel().select(cars.get(i));
                     }
                 }
@@ -635,7 +679,6 @@ public class CarServiceOrderController implements Initializable {
                 }
 
                 long index = clickedCSO.getEmployee_Key();
-                System.out.println((int)index);
                 employeeList.getSelectionModel().select((int)index - 1);
 
                 for (int i = 0; i<autoParts.size(); i++){
@@ -652,6 +695,12 @@ public class CarServiceOrderController implements Initializable {
                         customerList.getSelectionModel().select(customers.get(indexCustomer));
                     }
                 }
+                String newDate = clickedCSO.getDate();
+                DateTimeFormatter df = DateTimeFormatter.ofPattern("MM/dd/yy");
+                LocalDate date = LocalDate.parse(newDate,df);
+                text_date.setValue(date);
+                text_discount.clear();
+                text_quantity.setText(String.valueOf(clickedCSO.getPart_quantity()));
 
             }
         }

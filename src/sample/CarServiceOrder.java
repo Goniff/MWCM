@@ -18,6 +18,8 @@ public class CarServiceOrder {
     private String Part_ID;
     private double Price;
     private String Comments;
+    private String date;
+    private int part_quantity;
 
     /**
      * Constructor for adding CSOs to the DB
@@ -32,9 +34,11 @@ public class CarServiceOrder {
      * @param part_ID
      * @param price
      * @param comments
+     * @param date
+     * @param part_quantity
      */
     public CarServiceOrder(long emp_key, long cust_key, long car_key, long cs_key, long inv_key, String cust_id,
-                           String car_id, String service_id, String part_ID, double price, String comments){
+                           String car_id, String service_id, String part_ID, double price, String comments,String date, int part_quantity){
         this.Employee_Key = new SimpleLongProperty(emp_key);
         this.Customer_Key = new SimpleLongProperty(cust_key);
         this.Car_Key = new SimpleLongProperty(car_key);
@@ -46,6 +50,8 @@ public class CarServiceOrder {
         this.Part_ID = part_ID;
         this.Price = price;
         this.Comments = comments;
+        this.date = date;
+        this.part_quantity = part_quantity;
     }
 
     /**
@@ -64,7 +70,7 @@ public class CarServiceOrder {
      * @param comments
      */
     public CarServiceOrder(long pkey, long emp_key, long cust_key, long car_key, long cs_key, long inv_key, String cust_id,
-                           String car_id, String service_id, String part_ID, double price, String comments){
+                           String car_id, String service_id, String part_ID, double price, String comments,String date, int part_quantity){
         this.pKey = new SimpleLongProperty(pkey);
         this.Employee_Key = new SimpleLongProperty(emp_key);
         this.Customer_Key = new SimpleLongProperty(cust_key);
@@ -77,6 +83,8 @@ public class CarServiceOrder {
         this.Part_ID = part_ID;
         this.Price = price;
         this.Comments = comments;
+        this.date = date;
+        this.part_quantity = part_quantity;
     }
 
     public final long getpKey() {
@@ -197,5 +205,21 @@ public class CarServiceOrder {
 
     public void setCar_Key(long car_Key) {
         this.Car_Key.set(car_Key);
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public int getPart_quantity() {
+        return part_quantity;
+    }
+
+    public void setPart_quantity(int part_quantity) {
+        this.part_quantity = part_quantity;
     }
 }

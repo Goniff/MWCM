@@ -26,7 +26,7 @@
                 <Insets bottom="2.0" left="2.0" right="2.0" />
             </padding>
             <children>
-                <Label alignment="TOP_CENTER" prefHeight="17.0" prefWidth="246.0" text="Vehicle Information">
+                <Label alignment="TOP_CENTER" prefHeight="17.0" prefWidth="246.0" text="Payroll Information">
                     <padding>
                         <Insets bottom="2.0" left="2.0" />
                     </padding>
