@@ -127,7 +127,7 @@
                             <columns>
                                 <TableColumn id="number" fx:id="col_start" prefWidth="71.0" text="Start Date" />
                                 <TableColumn id="email" fx:id="col_end" prefWidth="68.0" text="End Date" />
-                        <TableColumn fx:id="col_costs" prefWidth="93.0" text="Cost of Goods" />
+                        <TableColumn fx:id="col_costs" prefWidth="93.0" text="Sales Profit" />
                         <TableColumn fx:id="col_service_profit" prefWidth="94.0" text="Service Profit" />
                         <TableColumn fx:id="col_taxes" prefWidth="54.0" text="Taxes" />
                         <TableColumn fx:id="col_profit" prefWidth="112.0" text="Before Tax Profit" />
