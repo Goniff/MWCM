@@ -101,10 +101,7 @@ public class InventoryController implements Initializable {
      * @return
      */
     public ObservableList<CarService> getCarServices(){
-//        for (int i = 0; i<categories.length; i++){
-//            carservices.add(categories[i]);
-//        }
-//        return carservices;
+
         try {
             Connection con = DBConnector.getConnection();
             Statement statement = con.createStatement();
@@ -335,7 +332,7 @@ public class InventoryController implements Initializable {
         }
     }
     /*
-   Filters the Employee table based on what string input the user types into the bar (a search function)
+   Filters the Inventory table based on what string input the user types into the bar (a search function)
    precondition: there must be objects for the search to filter through and the user must enter a proper string
    postcondition: the table will list only the employees that have strings matching what the user entered in the search bar
 */

@@ -17,10 +17,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.CustomerController">
+<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="845.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.CustomerController">
 
    <left>
-      <VBox prefHeight="426.0" prefWidth="170.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="529.0" prefWidth="162.0" BorderPane.alignment="CENTER">
          <padding>
             <Insets bottom="2.0" left="2.0" right="2.0" />
          </padding>
@@ -128,19 +128,13 @@
          </children>
       </VBox>
    </left>
-   <bottom>
-      <HBox prefHeight="32.0" prefWidth="800.0" spacing="10.0" BorderPane.alignment="CENTER">
-         <padding>
-            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-         </padding></HBox>
-   </bottom>
    <top>
       <HBox prefHeight="37.0" prefWidth="800.0" BorderPane.alignment="CENTER">
          <children>
             <AnchorPane prefHeight="20.0" prefWidth="800.0">
                <children>
-                  <Separator layoutY="36.0" prefHeight="3.0" prefWidth="800.0" />
-                  <Label alignment="TOP_CENTER" layoutY="10.0" prefHeight="17.0" prefWidth="800.0" text="Mechanical Car Workshop Manager">
+                  <Separator layoutY="38.0" prefHeight="3.0" prefWidth="845.0" />
+                  <Label alignment="TOP_CENTER" layoutY="10.0" prefHeight="27.0" prefWidth="845.0" text="Mechanical Car Workshop Manager">
                      <font>
                         <Font size="18.0" />
                      </font></Label>
@@ -158,12 +152,13 @@
                <bottom>
                   <HBox prefHeight="182.0" prefWidth="624.0" BorderPane.alignment="CENTER">
                      <children>
-                        <HBox prefHeight="182.0" prefWidth="624.0">
+                        <HBox prefHeight="182.0" prefWidth="679.0">
                            <children>
                               <Button fx:id="cars_button" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#carWindow" prefHeight="128.0" prefWidth="135.0" text="Cars" />
                               <Button fx:id="employee_button" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#employeeWindow" prefHeight="128.0" prefWidth="135.0" text="Employees" />
                               <Button fx:id="inventory_button" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#inventoryWindow" prefHeight="128.0" prefWidth="135.0" text="Inventory" />
                               <Button fx:id="CarServiceOrder_btn" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#carServiceOrderWindow" prefHeight="128.0" prefWidth="135.0" text="Car Service Order" />
+                              <Button fx:id="report_button" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onMouseClicked="#reportWindow" prefHeight="128.0" prefWidth="135.0" text="Reports" />
                            </children>
                            <padding>
                               <Insets top="2.0" />
@@ -175,7 +170,7 @@
                   <Insets />
                </BorderPane.margin>
                <center>
-                  <TableView id="tableView" fx:id="tableView" onMouseClicked="#clickCustomer" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                  <TableView id="tableView" fx:id="tableView" onMouseClicked="#clickCustomer" prefHeight="347.0" prefWidth="664.0" BorderPane.alignment="CENTER">
                     <columns>
                         <TableColumn id="firstName" fx:id="col_first" prefWidth="90.0" text="First Name" />
                         <TableColumn id="lastName" fx:id="col_last" prefWidth="90.0" text="Last Name" />

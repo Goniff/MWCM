@@ -13,7 +13,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("Customer.fxml"));
         primaryStage.setTitle("Mechanical Car Workshop Manager");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, 845, 600));
         primaryStage.show();
 
         primaryStage.setOnCloseRequest(e -> Platform.exit());

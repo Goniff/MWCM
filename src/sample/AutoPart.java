@@ -68,7 +68,7 @@ public class AutoPart {
     @Override
     // Overridden toString method used for displaying the customer's name in a dropdown menu
     public String toString() {
-        return name + " $" + price.getValue();
+        return name + "\n$" + price.getValue();
     }
 
     public long getpKey() {
