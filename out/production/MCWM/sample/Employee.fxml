@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.EmployeeController">
+<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.EmployeeController">
 
    <left>
       <VBox prefHeight="426.0" prefWidth="170.0" BorderPane.alignment="CENTER">
@@ -126,6 +126,20 @@
                <opaqueInsets>
                   <Insets right="20.0" />
                </opaqueInsets>
+            </GridPane>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Button fx:id="payroll_button" mnemonicParsing="false" onMouseClicked="#payrollWindow" prefHeight="30.0" prefWidth="141.0" text="Payroll" />
+               </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
             </GridPane>
          </children>
       </VBox>
