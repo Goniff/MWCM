@@ -10,17 +10,14 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
 import java.sql.*;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
@@ -50,6 +47,8 @@ public class ReportController implements Initializable {
     private TableColumn<Report,Double> col_net_profit;
     @FXML
     private TextField text_search;
+    @FXML
+    private TextArea text_inventory_report;
 
     // Tracks Car Service Orders
     private ObservableList<CarServiceOrder> carServiceOrders = FXCollections.observableArrayList();
@@ -71,6 +70,7 @@ public class ReportController implements Initializable {
         reports.clear();
         carServices.clear();
         parts.clear();
+        text_inventory_report.setEditable(false);
 
         // Table View
         col_start.setCellValueFactory(new PropertyValueFactory<Report, String>("startDate"));
@@ -110,7 +110,8 @@ public class ReportController implements Initializable {
                         rs.getDouble("serviceProfit"),
                         rs.getDouble("taxes"),
                         rs.getDouble("profit"),
-                        rs.getDouble("netProfit"));
+                        rs.getDouble("netProfit"),
+                        rs.getString("inventoryReport"));
                 reports.add(newReport);
             }
             rs.close();
@@ -220,14 +221,13 @@ public class ReportController implements Initializable {
     public void generateReport(ActionEvent actionEvent) {
         String startdate = start_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
         String enddate = end_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
-
+        String inventoryReport = getInventoryReport(startdate,enddate);
         double goodsCost = 0.0;
         double serviceProfit = 0.0;
         double taxes = 0.0;
         ObservableList<CarServiceOrder> tempList = getCSO(startdate, enddate);
-
         if (tempList.size() > 0) {
-            System.out.println(tempList.size());
+            //System.out.println(tempList.size());
             for (int i = 0; i < tempList.size(); i++) {
                 CarServiceOrder selectedCSO = tempList.get(i);
                 long cs_key = selectedCSO.getCarService_Key();
@@ -273,7 +273,7 @@ public class ReportController implements Initializable {
               //  System.out.println("taxes = " + taxes);
               //  System.out.println("profit = " + profit);
               //  System.out.println("net_proft = " + net_profit);
-            String sql = "INSERT INTO Report(startDate,endDate,goodsCost,serviceProfit,taxes,profit,netProfit)  VALUES(?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO Report(startDate,endDate,goodsCost,serviceProfit,taxes,profit,netProfit,inventoryReport)  VALUES(?,?,?,?,?,?,?,?)";
             try {
                 Connection con = DBConnector.getConnection();
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -284,6 +284,7 @@ public class ReportController implements Initializable {
                 preparedStatement.setDouble(5, nftaxes);
                 preparedStatement.setDouble(6, nfprofit);
                 preparedStatement.setDouble(7, nf_net_profit);
+                preparedStatement.setString(8, inventoryReport);
                 preparedStatement.execute();
                 System.out.println("Report generated successfully");
             } catch (SQLException e) {
@@ -340,12 +341,37 @@ public class ReportController implements Initializable {
                         rs.getDouble("serviceProfit"),
                         rs.getDouble("taxes"),
                         rs.getDouble("profit"),
-                        rs.getDouble("netProfit"));
+                        rs.getDouble("netProfit"),
+                        rs.getString("inventoryReport"));
                 reports.add(newReport);
             }
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public String getInventoryReport(String startdate,String enddate){
+        startdate = start_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
+        enddate = end_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
+        String header1 = "Inventory Part Name";
+        String header2 = "Quantity Used";
+        String divider = "------------------------------------------------------\n";
+        String partName = String.format("%-40s %-10s %n",header1,header2);
+        partName = partName + divider;
+        ObservableList<CarServiceOrder> tempList = getCSO(startdate, enddate);
+        for (int i = 0; i < tempList.size(); i++) {
+            CarServiceOrder selectedCSO = tempList.get(i);
+            long inventory_key = selectedCSO.getInventory_Key();
+            if (inventory_key > 0) {
+                for (int j = 0; j<parts.size(); j++){
+                    if (inventory_key == parts.get(j).getpKey()){
+                         String temp = String.format("%-35s %10s %n",  parts.get(j).getName(),tempList.get(i).getPart_quantity());
+                         partName = partName + temp;
+                    }
+                }
+            }
+        } System.out.println(partName);
+        return partName;
     }
 
     /*
@@ -383,6 +409,16 @@ postcondition: the table will list only the employees that have strings matching
             sortedDatabase.comparatorProperty().bind(tableView.comparatorProperty());
             tableView.setItems(sortedDatabase);
         }));
+    }
+
+    public void clickedReport (MouseEvent actionEvent){
+        if (tableView.getSelectionModel().isEmpty()){
+
+        }else {
+            String inventoryReport = tableView.getSelectionModel().getSelectedItem().getInventoryReport();
+            System.out.println(inventoryReport);
+            text_inventory_report.setText(inventoryReport);
+        }
     }
 
 }

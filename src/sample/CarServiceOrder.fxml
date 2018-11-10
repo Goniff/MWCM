@@ -162,8 +162,8 @@
                                 <TableColumn fx:id="col_ordernumber" prefWidth="72.0" text="Order #" />
                                 <TableColumn id="number" fx:id="col_customer" prefWidth="161.0" text="Customer" />
                                 <TableColumn id="email" fx:id="col_car" prefWidth="90.0" text="Car" />
-                                <TableColumn fx:id="col_price" prefWidth="82.0" text="Price" />
-                        <TableColumn fx:id="col_date" prefWidth="75.0" text="Date" />
+                                <TableColumn fx:id="col_price" prefWidth="51.0" text="Price" />
+                        <TableColumn fx:id="col_date" prefWidth="106.0" text="Date" />
                         <TableColumn fx:id="col_comments" prefWidth="143.0" text="Comments" />
                             </columns>
                             <opaqueInsets>

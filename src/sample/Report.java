@@ -15,11 +15,12 @@ public class Report {
     private DoubleProperty taxes;
     private DoubleProperty profit;
     private DoubleProperty netProfit;
+    private String inventoryReport;
 
     /*
         Constructor for adding Report to database
      */
-    public Report(String startDate, String endDate, double goodsCost, double serviceProfit, double taxes, double profit, double netProfit) {
+    public Report(String startDate, String endDate, double goodsCost, double serviceProfit, double taxes, double profit, double netProfit, String inventoryReport) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.goodsCost = new SimpleDoubleProperty(goodsCost);
@@ -27,12 +28,13 @@ public class Report {
         this.taxes = new SimpleDoubleProperty(taxes);
         this.profit = new SimpleDoubleProperty(profit);
         this.netProfit = new SimpleDoubleProperty(netProfit);
+        this.inventoryReport = inventoryReport;
     }
 
     /*
         Constructor for reading Report from database
      */
-    public Report(long pKey, String startDate, String endDate, double goodsCost, double serviceProfit, double taxes, double profit, double netProfit) {
+    public Report(long pKey, String startDate, String endDate, double goodsCost, double serviceProfit, double taxes, double profit, double netProfit, String inventoryReport) {
         this.pKey = new SimpleLongProperty(pKey);
         this.startDate = startDate;
         this.endDate = endDate;
@@ -41,6 +43,7 @@ public class Report {
         this.taxes = new SimpleDoubleProperty(taxes);
         this.profit = new SimpleDoubleProperty(profit);
         this.netProfit = new SimpleDoubleProperty(netProfit);
+        this.inventoryReport = inventoryReport;
     }
 
     public long getpKey() {
@@ -126,5 +129,13 @@ public class Report {
 
     public void setNetProfit(double netProfit) {
         this.netProfit.set(netProfit);
+    }
+
+    public String getInventoryReport() {
+        return inventoryReport;
+    }
+
+    public void setInventoryReport(String inventoryReport) {
+        this.inventoryReport = inventoryReport;
     }
 }
