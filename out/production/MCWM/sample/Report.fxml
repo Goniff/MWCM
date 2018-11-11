@@ -2,12 +2,12 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.PayrollController">
+<BorderPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.ReportController">
 
     <left>
         <VBox prefHeight="426.0" prefWidth="170.0" BorderPane.alignment="CENTER">
@@ -26,7 +26,7 @@
                 <Insets bottom="2.0" left="2.0" right="2.0" />
             </padding>
             <children>
-                <Label alignment="TOP_CENTER" prefHeight="17.0" prefWidth="246.0" text="Payroll Information">
+                <Label alignment="TOP_CENTER" prefHeight="17.0" prefWidth="246.0" text="Reports">
                     <padding>
                         <Insets bottom="2.0" left="2.0" />
                     </padding>
@@ -34,23 +34,17 @@
                         <Font size="15.0" />
                     </font>
                 </Label>
-                <GridPane prefHeight="155.0" prefWidth="166.0">
+                <GridPane prefHeight="70.0" prefWidth="166.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="127.0" minWidth="10.0" prefWidth="127.0" />
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <ComboBox fx:id="employeeList" prefWidth="150.0" promptText="Employee" />
-                  <TextField fx:id="text_hours" promptText="Hours Worked" GridPane.rowIndex="1" />
-                  <DatePicker fx:id="start_date" onAction="#setEndDate" promptText="Starting Day" GridPane.rowIndex="2" />
-                  <DatePicker fx:id="end_date" promptText="Ending Day" GridPane.rowIndex="3" />
-                  <TextField fx:id="text_BonusPay" promptText="Bonus Pay" GridPane.rowIndex="4" />
+                        <DatePicker fx:id="start_date" promptText="Starting Day" />
+                        <DatePicker fx:id="end_date" promptText="Ending Day" GridPane.rowIndex="1" />
                     </children>
                     <padding>
                         <Insets left="10.0" right="2.0" />
@@ -59,29 +53,20 @@
                 <GridPane prefHeight="77.0" prefWidth="166.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
-                    <children>
-                        <Button fx:id="addButton" mnemonicParsing="false" onAction="#addPayroll" prefHeight="25.0" prefWidth="62.0" text="Add">
-                            <GridPane.margin>
-                                <Insets left="10.0" />
-                            </GridPane.margin>
-                        </Button>
-                        <Button fx:id="updateButton" mnemonicParsing="false" onAction="#updatePayroll" prefHeight="25.0" prefWidth="62.0" text="Update" GridPane.columnIndex="1">
-                            <GridPane.margin>
-                                <Insets left="10.0" />
-                            </GridPane.margin>
-                        </Button>
-                        <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deletePayroll" prefHeight="25.0" prefWidth="62.0" text="Delete" GridPane.rowIndex="1">
-                            <GridPane.margin>
-                                <Insets left="10.0" />
-                            </GridPane.margin>
-                        </Button>
-                    </children>
+               <children>
+                  <Button fx:id="report_button" mnemonicParsing="false" onAction="#generateReport" prefHeight="36.0" prefWidth="166.0" text="Generate Report">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets left="10.0" right="20.0" />
+               </padding>
                 </GridPane>
                 <GridPane>
                     <columnConstraints>
@@ -92,7 +77,7 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
-                        <TextField fx:id="text_search" onKeyPressed="#search" prefHeight="25.0" prefWidth="119.0" promptText="Search...">
+                        <TextField fx:id="text_search" onKeyPressed="#searchPart" prefHeight="25.0" prefWidth="119.0" promptText="Search...">
                             <opaqueInsets>
                                 <Insets left="10.0" />
                             </opaqueInsets>
@@ -138,20 +123,31 @@
                     <BorderPane.margin>
                         <Insets />
                     </BorderPane.margin>
-                    <center>
-                        <TableView id="tableView" fx:id="tableView" onMouseClicked="#clickedPayroll" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                            <columns>
-                                <TableColumn fx:id="col_employee" prefWidth="120.0" text="Employee" />
-                                <TableColumn id="number" fx:id="col_start" prefWidth="99.0" text="Start Day" />
-                                <TableColumn id="email" fx:id="col_end" prefWidth="100.0" text="End Day" />
-                                <TableColumn fx:id="col_hours" prefWidth="185.0" text="Hours Worked" />
-                                <TableColumn fx:id="col_amount" prefWidth="119.0" text="Payment Amount" />
-                            </columns>
-                            <opaqueInsets>
-                                <Insets />
-                            </opaqueInsets>
+               <center>
+                  <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <TableView id="tableView" fx:id="tableView" onMouseClicked="#clickedReport" prefHeight="389.0" prefWidth="624.0">
+                           <columns>
+                              <TableColumn id="number" fx:id="col_start" prefWidth="71.0" text="Start Date" />
+                              <TableColumn id="email" fx:id="col_end" prefWidth="68.0" text="End Date" />
+                              <TableColumn fx:id="col_costs" prefWidth="93.0" text="Sales Profit" />
+                              <TableColumn fx:id="col_service_profit" prefWidth="94.0" text="Service Profit" />
+                              <TableColumn fx:id="col_taxes" prefWidth="54.0" text="Taxes" />
+                              <TableColumn fx:id="col_profit" prefWidth="112.0" text="Before Tax Profit" />
+                              <TableColumn fx:id="col_net_profit" prefWidth="130.0" text="After Tax Profit" />
+                           </columns>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
                         </TableView>
-                    </center>
+                        <TextArea fx:id="text_inventory_report" prefHeight="200.0" prefWidth="200.0" promptText="Inventory Usage">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextArea>
+                     </children>
+                  </VBox>
+               </center>
                 </BorderPane>
             </center>
         </BorderPane>
