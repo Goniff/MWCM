@@ -142,10 +142,11 @@
                         <TableView id="tableView" fx:id="tableView" onMouseClicked="#clickedPayroll" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                             <columns>
                                 <TableColumn fx:id="col_employee" prefWidth="120.0" text="Employee" />
-                                <TableColumn id="number" fx:id="col_start" prefWidth="99.0" text="Start Day" />
+                                <TableColumn id="number" fx:id="col_start" prefWidth="100.0" text="Start Day" />
                                 <TableColumn id="email" fx:id="col_end" prefWidth="100.0" text="End Day" />
-                                <TableColumn fx:id="col_hours" prefWidth="185.0" text="Hours Worked" />
-                                <TableColumn fx:id="col_amount" prefWidth="119.0" text="Payment Amount" />
+                                <TableColumn fx:id="col_hours" prefWidth="100.0" text="Hours Worked" />
+                        <TableColumn fx:id="col_payrate" text="Pay Rate" />
+                                <TableColumn fx:id="col_amount" prefWidth="120.0" text="Payment Amount" />
                             </columns>
                             <opaqueInsets>
                                 <Insets />
