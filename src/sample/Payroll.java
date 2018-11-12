@@ -14,21 +14,44 @@ public class Payroll {
     private String startDate;
     private String endDate;
     private DoubleProperty payment;
+    private DoubleProperty payrate;
+    private DoubleProperty bonus;
 
-    /* Constructor for adding Payroll to database
+    /**
+     * Constructor for adding Payroll to database
+     * @param emp_key
+     * @param employee_name
+     * @param hours
+     * @param startDate
+     * @param endDate
+     * @param payment
+     * @param payrate
      */
-    public Payroll(long emp_key,String employee_name,int hours, String startDate, String endDate, double payment) {
+    public Payroll(long emp_key, String employee_name, int hours, String startDate, String endDate, double payment,
+                   double payrate,double bonus) {
         this.emp_key = new SimpleLongProperty(emp_key);
         this.employee_name = employee_name;
         this.hours = hours;
         this.startDate = startDate;
         this.endDate = endDate;
         this.payment = new SimpleDoubleProperty(payment);
+        this.payrate = new SimpleDoubleProperty(payrate);
+        this.bonus = new SimpleDoubleProperty(bonus);
     }
 
-    /* Constructor for reading Payroll from database
+    /**
+     * Constructor for reading Payroll from database
+     * @param emp_key
+     * @param employee_name
+     * @param hours
+     * @param startDate
+     * @param endDate
+     * @param payment
+     * @param pKey
+     * @param payrate
      */
-    public Payroll(long emp_key,String employee_name, int hours, String startDate, String endDate, double payment,long pKey) {
+    public Payroll(long emp_key, String employee_name, int hours, String startDate, String endDate, double payment,
+                   long pKey, double payrate,double bonus) {
         this.emp_key = new SimpleLongProperty(emp_key);
         this.employee_name = employee_name;
         this.hours = hours;
@@ -36,6 +59,8 @@ public class Payroll {
         this.endDate = endDate;
         this.payment = new SimpleDoubleProperty(payment);
         this.pKey = new SimpleLongProperty(pKey);
+        this.payrate = new SimpleDoubleProperty(payrate);
+        this.bonus = new SimpleDoubleProperty(bonus);
     }
 
     public long getpKey() {
@@ -104,5 +129,29 @@ public class Payroll {
 
     public void setPayment(double payment) {
         this.payment.set(payment);
+    }
+
+    public double getPayrate() {
+        return payrate.get();
+    }
+
+    public DoubleProperty payrateProperty() {
+        return payrate;
+    }
+
+    public void setPayrate(double payrate) {
+        this.payrate.set(payrate);
+    }
+
+    public double getBonus() {
+        return bonus.get();
+    }
+
+    public DoubleProperty bonusProperty() {
+        return bonus;
+    }
+
+    public void setBonus(double bonus) {
+        this.bonus.set(bonus);
     }
 }
