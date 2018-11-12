@@ -367,11 +367,12 @@ public class CarServiceOrderController implements Initializable {
         CarService carService = carServiceList.getSelectionModel().getSelectedItem();
         AutoPart autoPart = autopartList.getSelectionModel().getSelectedItem();
         int part_quantity = 0;
+        if(!autopartList.getSelectionModel().isEmpty()){
+            part_quantity = 1;
+        }
         if(text_quantity.getLength() > 0) {
             part_quantity = Integer.valueOf(text_quantity.getText());
         }
-
-
         Double discount = 0.0;
         if(text_discount.getLength() > 0) {
             discount = Double.valueOf(text_discount.getText());

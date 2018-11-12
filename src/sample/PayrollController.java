@@ -33,6 +33,8 @@ public class PayrollController implements Initializable {
     private ComboBox<Employee> employeeList;
     @FXML
     private TextField text_search;
+    @FXML
+    private TextField text_BonusPay;
 
     @FXML
     private TableColumn<Payroll,String> col_employee;
@@ -42,6 +44,8 @@ public class PayrollController implements Initializable {
     private TableColumn<Payroll,String> col_end;
     @FXML
     private TableColumn<Payroll,Integer> col_hours;
+    @FXML
+    private TableColumn<Payroll, Double> col_payrate;
     @FXML
     private TableColumn<Payroll,Double> col_amount;
 
@@ -66,6 +70,7 @@ public class PayrollController implements Initializable {
         col_start.setCellValueFactory(new PropertyValueFactory<Payroll, String>("startDate"));
         col_end.setCellValueFactory(new PropertyValueFactory<Payroll, String>("endDate"));
         col_hours.setCellValueFactory(new PropertyValueFactory<Payroll, Integer>("hours"));
+        col_payrate.setCellValueFactory(new PropertyValueFactory<Payroll, Double>("payrate"));
         col_amount.setCellValueFactory(new PropertyValueFactory<Payroll, Double>("payment"));
 
         employeeList.setItems(getEmployee());
@@ -92,7 +97,8 @@ public class PayrollController implements Initializable {
                         rs.getString("startDate"),
                         rs.getString("endDate"),
                         rs.getDouble("payment"),
-                        rs.getLong("Key"));
+                        rs.getLong("Key"),
+                        rs.getDouble("payrate"));
                 payrolls.add(newPayment);
             }
             rs.close();
@@ -149,17 +155,21 @@ public class PayrollController implements Initializable {
         int hours = Integer.valueOf(text_hours.getText());
         String startdate = start_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
         String enddate = end_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
-        double payment = hours * selectedEmployee.getPayrate();
+        double payment = calculatePayment(hours, selectedEmployee.getPayrate());
+        double bonusPay = text_BonusPay.getText().isEmpty() ? 0.0 : Double.valueOf(text_BonusPay.getText());
+        payment = payment + bonusPay;
         long emp_key;
+
         if(hours == 0 || payment == 0 || startdate.isEmpty()){
             System.out.println("Invalid field");
         }else{
             String employeeName = selectedEmployee.toString();
             emp_key = selectedEmployee.getpKey();
             //System.out.println("emp_key: " + emp_key);
-            Payroll newPayroll = new Payroll (emp_key,employeeName,hours,startdate,enddate,payment);
+            Payroll newPayroll = new Payroll (emp_key,employeeName,hours,startdate,enddate,payment,
+                    selectedEmployee.getPayrate());
             payrolls.add(newPayroll);
-            String sql = "INSERT INTO Payroll(emp_key,employee_name,hours,startDate,endDate,payment) VALUES(?,?,?,?,?,?)";
+            String sql = "INSERT INTO Payroll(emp_key,employee_name,hours,startDate,endDate,payment,payrate) VALUES(?,?,?,?,?,?,?)";
             try {
                 Connection con = DBConnector.getConnection();
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -169,6 +179,7 @@ public class PayrollController implements Initializable {
                 preparedStatement.setString(4, startdate);
                 preparedStatement.setString(5, enddate);
                 preparedStatement.setDouble(6, payment);
+                preparedStatement.setDouble(7, selectedEmployee.getPayrate());
                 preparedStatement.execute();
                 System.out.println("Add Successful");
             } catch (SQLException e) {
@@ -176,6 +187,26 @@ public class PayrollController implements Initializable {
             }
         refreshTable();
         }
+    }
+
+    /**
+     *  Calculate the pay of an employee
+     * @param hours
+     * @param payrate
+     * @return double type pay
+     */
+    public double calculatePayment(int hours, double payrate){
+        double pay = 0;
+        if (hours <= 40){
+            pay = hours * payrate;
+        }
+        else if (hours > 40 && hours <= 80){     // 1.5 pay
+            pay = (40 * payrate) + ((hours-40) * payrate * 1.5);
+        }
+        else if (hours > 80){  // double pay
+            pay = (40 * payrate) + (40 * payrate * 1.5) + ((hours-80) * payrate * 2.0);
+        }
+        return pay;
     }
     /*
        Updates the payroll the user currently has selected on the table with the new information in the fields
@@ -189,7 +220,10 @@ public class PayrollController implements Initializable {
         int hours = Integer.valueOf(text_hours.getText());
         String startdate = start_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
         String enddate = end_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
-        double payment = hours * selectedEmployee.getPayrate();
+        double payrate = clickedPayroll.getPayrate();
+        double payment = calculatePayment(hours, payrate);
+        double bonusPay = text_BonusPay.getText().isEmpty() ? 0.0 : Double.valueOf(text_BonusPay.getText());
+        payment = payment + bonusPay;
 
         if(hours == 0 || payment == 0 || startdate.isEmpty()){
             System.out.println("Invalid field");
@@ -297,7 +331,8 @@ public class PayrollController implements Initializable {
                         rs.getString("startDate"),
                         rs.getString("endDate"),
                         rs.getDouble("payment"),
-                        rs.getLong("Key"));
+                        rs.getLong("Key"),
+                        rs.getDouble("payrate"));
                 payrolls.add(newPayroll);
             }
         }catch (Exception e){
