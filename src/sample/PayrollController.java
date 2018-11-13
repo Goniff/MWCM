@@ -98,7 +98,8 @@ public class PayrollController implements Initializable {
                         rs.getString("endDate"),
                         rs.getDouble("payment"),
                         rs.getLong("Key"),
-                        rs.getDouble("payrate"));
+                        rs.getDouble("payrate"),
+                        rs.getDouble("bonus"));
                 payrolls.add(newPayment);
             }
             rs.close();
@@ -167,9 +168,9 @@ public class PayrollController implements Initializable {
             emp_key = selectedEmployee.getpKey();
             //System.out.println("emp_key: " + emp_key);
             Payroll newPayroll = new Payroll (emp_key,employeeName,hours,startdate,enddate,payment,
-                    selectedEmployee.getPayrate());
+                    selectedEmployee.getPayrate(),bonusPay);
             payrolls.add(newPayroll);
-            String sql = "INSERT INTO Payroll(emp_key,employee_name,hours,startDate,endDate,payment,payrate) VALUES(?,?,?,?,?,?,?)";
+            String sql = "INSERT INTO Payroll(emp_key,employee_name,hours,startDate,endDate,payment,payrate,bonus) VALUES(?,?,?,?,?,?,?,?)";
             try {
                 Connection con = DBConnector.getConnection();
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -180,6 +181,7 @@ public class PayrollController implements Initializable {
                 preparedStatement.setString(5, enddate);
                 preparedStatement.setDouble(6, payment);
                 preparedStatement.setDouble(7, selectedEmployee.getPayrate());
+                preparedStatement.setDouble(8,bonusPay);
                 preparedStatement.execute();
                 System.out.println("Add Successful");
             } catch (SQLException e) {
@@ -231,7 +233,7 @@ public class PayrollController implements Initializable {
             String employeeName = selectedEmployee.toString();
             long emp_key = selectedEmployee.getpKey();
             long key = clickedPayroll.getpKey();
-            String sql = "UPDATE Payroll SET emp_key=? ,employee_name=? ,hours=?,startDate=? ,endDate=?,payment=? where Key=?";
+            String sql = "UPDATE Payroll SET emp_key=? ,employee_name=? ,hours=?,startDate=? ,endDate=?,payment=?, bonus=? where Key=?";
             try {
                 Connection con = DBConnector.getConnection();
                 PreparedStatement preparedStatement = con.prepareStatement(sql);
@@ -241,7 +243,8 @@ public class PayrollController implements Initializable {
                 preparedStatement.setString(4, startdate);
                 preparedStatement.setString(5, enddate);
                 preparedStatement.setDouble(6, payment);
-                preparedStatement.setLong(7, key);
+                preparedStatement.setDouble(7,bonusPay);
+                preparedStatement.setLong(8, key);
                 preparedStatement.execute();
                 payrolls.set(index,clickedPayroll);
                 System.out.println("Update Successful");
@@ -273,6 +276,7 @@ public class PayrollController implements Initializable {
             text_hours.clear();
             start_date.setValue(null);
             end_date.setValue(null);
+            text_BonusPay.clear();
             employeeList.valueProperty().set(null);
 
         } catch (SQLException e) {
@@ -299,6 +303,7 @@ public class PayrollController implements Initializable {
                 LocalDate date = LocalDate.parse(startDate,df);
                 start_date.setValue(date);
                 text_hours.setText(String.valueOf(clickedPayroll.getHours()));
+                text_BonusPay.setText(String.valueOf(clickedPayroll.getBonus()));
 
                 for (int i = 0; i < employees.size(); i++) {
                     Employee myEmployee = employees.get(i);
@@ -332,7 +337,8 @@ public class PayrollController implements Initializable {
                         rs.getString("endDate"),
                         rs.getDouble("payment"),
                         rs.getLong("Key"),
-                        rs.getDouble("payrate"));
+                        rs.getDouble("payrate"),
+                        rs.getDouble("bonus"));
                 payrolls.add(newPayroll);
             }
         }catch (Exception e){

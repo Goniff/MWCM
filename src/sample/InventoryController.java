@@ -7,7 +7,10 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -15,7 +18,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
@@ -362,6 +367,20 @@ public class InventoryController implements Initializable {
             sortedDatabase.comparatorProperty().bind(tableView.comparatorProperty());
             tableView.setItems(sortedDatabase);
         }));
+    }
+
+    public void carServiceWindow(MouseEvent actionEvent){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("CarService.fxml"));
+            Parent root = (Parent)fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Car Service");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e){
+            System.err.println(e);
+        }
     }
 
 

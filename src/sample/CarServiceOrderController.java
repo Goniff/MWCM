@@ -94,7 +94,6 @@ public class CarServiceOrderController implements Initializable {
 
         carServiceOrderTableView.setItems(getCarServiceOrderList());
 
-
     }
 
     /*

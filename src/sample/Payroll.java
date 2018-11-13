@@ -15,6 +15,7 @@ public class Payroll {
     private String endDate;
     private DoubleProperty payment;
     private DoubleProperty payrate;
+    private DoubleProperty bonus;
 
     /**
      * Constructor for adding Payroll to database
@@ -27,7 +28,7 @@ public class Payroll {
      * @param payrate
      */
     public Payroll(long emp_key, String employee_name, int hours, String startDate, String endDate, double payment,
-                   double payrate) {
+                   double payrate,double bonus) {
         this.emp_key = new SimpleLongProperty(emp_key);
         this.employee_name = employee_name;
         this.hours = hours;
@@ -35,6 +36,7 @@ public class Payroll {
         this.endDate = endDate;
         this.payment = new SimpleDoubleProperty(payment);
         this.payrate = new SimpleDoubleProperty(payrate);
+        this.bonus = new SimpleDoubleProperty(bonus);
     }
 
     /**
@@ -49,7 +51,7 @@ public class Payroll {
      * @param payrate
      */
     public Payroll(long emp_key, String employee_name, int hours, String startDate, String endDate, double payment,
-                   long pKey, double payrate) {
+                   long pKey, double payrate,double bonus) {
         this.emp_key = new SimpleLongProperty(emp_key);
         this.employee_name = employee_name;
         this.hours = hours;
@@ -58,6 +60,7 @@ public class Payroll {
         this.payment = new SimpleDoubleProperty(payment);
         this.pKey = new SimpleLongProperty(pKey);
         this.payrate = new SimpleDoubleProperty(payrate);
+        this.bonus = new SimpleDoubleProperty(bonus);
     }
 
     public long getpKey() {
@@ -138,5 +141,17 @@ public class Payroll {
 
     public void setPayrate(double payrate) {
         this.payrate.set(payrate);
+    }
+
+    public double getBonus() {
+        return bonus.get();
+    }
+
+    public DoubleProperty bonusProperty() {
+        return bonus;
+    }
+
+    public void setBonus(double bonus) {
+        this.bonus.set(bonus);
     }
 }
