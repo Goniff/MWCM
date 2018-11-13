@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -55,6 +56,7 @@
                     </columnConstraints>
                     <rowConstraints>
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                <children>
                   <Button fx:id="report_button" mnemonicParsing="false" onAction="#generateReport" prefHeight="36.0" prefWidth="166.0" text="Generate Report">
@@ -62,6 +64,7 @@
                         <Insets />
                      </GridPane.margin>
                   </Button>
+                  <Button fx:id="InventoryReport_Button" mnemonicParsing="false" onAction="#generateCurrentInventoryReport" prefHeight="36.0" prefWidth="166.0" text="Inventory Report" GridPane.rowIndex="1" />
                </children>
                <padding>
                   <Insets left="10.0" right="20.0" />
@@ -122,22 +125,31 @@
                     <BorderPane.margin>
                         <Insets />
                     </BorderPane.margin>
-                    <center>
-                        <TableView id="tableView" fx:id="tableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                            <columns>
-                                <TableColumn id="number" fx:id="col_start" prefWidth="71.0" text="Start Date" />
-                                <TableColumn id="email" fx:id="col_end" prefWidth="68.0" text="End Date" />
-                        <TableColumn fx:id="col_costs" prefWidth="93.0" text="Sales Profit" />
-                        <TableColumn fx:id="col_service_profit" prefWidth="94.0" text="Service Profit" />
-                        <TableColumn fx:id="col_taxes" prefWidth="54.0" text="Taxes" />
-                        <TableColumn fx:id="col_profit" prefWidth="112.0" text="Before Tax Profit" />
-                        <TableColumn fx:id="col_net_profit" prefWidth="130.0" text="After Tax Profit" />
-                            </columns>
-                            <opaqueInsets>
-                                <Insets />
-                            </opaqueInsets>
+               <center>
+                  <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <TableView id="tableView" fx:id="tableView" onMouseClicked="#clickedReport" prefHeight="389.0" prefWidth="624.0">
+                           <columns>
+                              <TableColumn id="number" fx:id="col_start" prefWidth="71.0" text="Start Date" />
+                              <TableColumn id="email" fx:id="col_end" prefWidth="68.0" text="End Date" />
+                              <TableColumn fx:id="col_costs" prefWidth="93.0" text="Sales Profit" />
+                              <TableColumn fx:id="col_service_profit" prefWidth="94.0" text="Service Profit" />
+                              <TableColumn fx:id="col_taxes" prefWidth="54.0" text="Taxes" />
+                              <TableColumn fx:id="col_profit" prefWidth="112.0" text="Before Tax Profit" />
+                              <TableColumn fx:id="col_net_profit" prefWidth="130.0" text="After Tax Profit" />
+                           </columns>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
                         </TableView>
-                    </center>
+                        <TextArea fx:id="text_inventory_report" prefHeight="200.0" prefWidth="200.0" promptText="Inventory Usage">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextArea>
+                     </children>
+                  </VBox>
+               </center>
                 </BorderPane>
             </center>
         </BorderPane>
