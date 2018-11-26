@@ -8,6 +8,7 @@ public class DBConnector {
         try { // create a database connection
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:MCWM.db");
+            //connection = DriverManager.getConnection("jdbc:sqlite::resource:MCWM.db");
             return connection;
 
         } catch (Exception e) {

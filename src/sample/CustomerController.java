@@ -95,19 +95,20 @@ public class CustomerController implements Initializable {
         tableView.setItems(getCustomer());
         states_cb.setItems(getStates());
 
-        Image imageCar = new Image(getClass().getResourceAsStream("../Images/sports-car.png"));
+        // COMMENT OUT THE IMAGE READING LINES OUT IF NOT EXPORTING TO A JAR
+        Image imageCar = new Image(getClass().getResourceAsStream("/sports-car.png"));
         cars_button.setGraphic(new ImageView(imageCar));
 
-        Image imageEmployee = new Image(getClass().getResourceAsStream("../Images/employee.png"));
+        Image imageEmployee = new Image(getClass().getResourceAsStream("/employee.png"));
         employee_button.setGraphic(new ImageView(imageEmployee));
 
-        Image imageInventory = new Image(getClass().getResourceAsStream("../Images/inventory.png"));
+        Image imageInventory = new Image(getClass().getResourceAsStream("/inventory.png"));
         inventory_button.setGraphic(new ImageView(imageInventory));
 
-        Image carService = new Image(getClass().getResourceAsStream("../Images/carservices.png"));
+        Image carService = new Image(getClass().getResourceAsStream("/carservices.png"));
         CarServiceOrder_btn.setGraphic(new ImageView(carService));
 
-        Image reports = new Image(getClass().getResourceAsStream("../Images/reports.png"));
+        Image reports = new Image(getClass().getResourceAsStream("/reports.png"));
         report_button.setGraphic(new ImageView(reports));
     }
     /*
@@ -164,12 +165,15 @@ public class CustomerController implements Initializable {
         String city = text_city.getText();
         String zipcode = text_zipcode.getText();
         String state = states_cb.getSelectionModel().getSelectedItem();
-
-        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 || email.length() == 0 ||
+        if(email.length() == 0 ){
+            email = "";
+        }
+        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 ||
                 address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0) {
             if (number.length() < 10) {
                 System.out.println("Invalid number");
             }
+
             System.out.println("One or more fields encountered and error");
         } else {
             String sql = "INSERT INTO Customer(firstName,lastName,number,email,address,city,zipcode,state)  VALUES(?,?,?,?,?,?,?,?)";
@@ -235,7 +239,11 @@ public class CustomerController implements Initializable {
         String state = states_cb.getSelectionModel().getSelectedItem();
         long key = clickedCustomer.getpKey().getValue();
 
-        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 || email.length() == 0 || address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0) {
+        if(email.length() == 0){
+            email = "";
+        }
+
+        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 || address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0) {
             if (number.length() < 10) {
                 System.out.println("Invalid number");
             }

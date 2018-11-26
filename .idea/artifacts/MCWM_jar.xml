@@ -1,0 +1,11 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MCWM:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MCWM_jar</output-path>
+    <root id="archive" name="MCWM.jar">
+      <element id="module-output" name="MCWM" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/database/sqlite-jdbc-3.23.1.jar" path-in-jar="/" />
+      <element id="dir-copy" path="$PROJECT_DIR$/out/production/MCWM/Images" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/database/sqlite-jdbc-3.23.1.jar" />
+    </root>
+  </artifact>
+</component>
