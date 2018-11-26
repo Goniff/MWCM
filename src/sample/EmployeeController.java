@@ -158,7 +158,7 @@ public class EmployeeController implements Initializable {
             payrate = 0.0;
         }
 
-        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 || email.length() == 0
+        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0
                 || address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0
                 || stringPayrate.length() == 0) {
             if (number.length() < 10) {
@@ -166,6 +166,9 @@ public class EmployeeController implements Initializable {
             }
             System.out.println("One or more fields encountered and error");
         } else {
+            if(email.length() == 0){
+                email = "";
+            }
             //Employee emp = new Employee(firstName, lastName, number, email, address, city, zipcode, state, payrate);
             //employees.add(emp);
             String sql = "INSERT INTO Employee(firstName,lastName,number,email,address,city,zipcode,state,payrate)  VALUES(?,?,?,?,?,?,?,?,?)";
@@ -233,6 +236,10 @@ public class EmployeeController implements Initializable {
         String zipcode = text_zipcode.getText();
         String state = states_cb.getSelectionModel().getSelectedItem();
         String stringPayrate = text_payrate.getText();
+        if(email.length() == 0){
+            email = "";
+        }
+
         // attempt to parse payrate into a double
         double payrate;
         try{
@@ -244,7 +251,7 @@ public class EmployeeController implements Initializable {
         }
         long key = clickedEmployee.getpKey();
 
-        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 || email.length() == 0
+        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0
                 || address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0
                 || stringPayrate.length() == 0) {
             if (number.length() < 10) {

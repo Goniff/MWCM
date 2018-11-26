@@ -50,6 +50,7 @@ public class ReportController implements Initializable {
     @FXML
     private TextArea text_inventory_report;
 
+
     // Tracks Car Service Orders
     private ObservableList<CarServiceOrder> carServiceOrders = FXCollections.observableArrayList();
     // Tracks reports
@@ -218,6 +219,20 @@ public class ReportController implements Initializable {
         return parts;
     }
 
+    /**
+     *
+     */
+    public void generateCurrentInventoryReport(){
+        String report = getInventoryReport();
+        System.out.println(report);
+        text_inventory_report.setStyle("-fx-font-family: monospace");
+        text_inventory_report.setText(report);
+    }
+
+    /**
+     * Generate a report based on the selected dates
+     * @param actionEvent
+     */
     public void generateReport(ActionEvent actionEvent) {
         String startdate = start_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
         String enddate = end_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
@@ -350,13 +365,19 @@ public class ReportController implements Initializable {
         }
     }
 
+    /**
+     * Get the inventory parts used by the CarServiceOrders within the Start and End Dates
+     * @param startdate
+     * @param enddate
+     * @return
+     */
     public String getInventoryReport(String startdate,String enddate){
         startdate = start_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
         enddate = end_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
         String header1 = "Inventory Part Name";
         String header2 = "Quantity Used";
         String divider = "------------------------------------------------------\n";
-        String partName = String.format("%-40s %-10s %n",header1,header2);
+        String partName = String.format("%-40s|%-10s %n",header1,header2);
         partName = partName + divider;
         ObservableList<CarServiceOrder> tempList = getCSO(startdate, enddate);
         for (int i = 0; i < tempList.size(); i++) {
@@ -365,7 +386,7 @@ public class ReportController implements Initializable {
             if (inventory_key > 0) {
                 for (int j = 0; j<parts.size(); j++){
                     if (inventory_key == parts.get(j).getpKey()){
-                         String temp = String.format("%-35s %10s %n",  parts.get(j).getName(),tempList.get(i).getPart_quantity());
+                         String temp = String.format("%-40s|%10s %n",  parts.get(j).getName(),tempList.get(i).getPart_quantity());
                          partName = partName + temp;
                     }
                 }
@@ -374,11 +395,32 @@ public class ReportController implements Initializable {
         return partName;
     }
 
+    /**
+     * Used by the InventoryReport_Button to generate the current inventory based on the database.
+     * @return String value formatted to represent all current stock of Autoparts in the database.
+     */
+    public String getInventoryReport(){
+        //startdate = start_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
+        //enddate = end_date.getValue().format(DateTimeFormatter.ofPattern("MM/dd/yy"));
+        String header1 = "Inventory Part Name";
+        String header2 = "Quantity Used";
+        String divider = "------------------------------------------------------\n";
+        String partName = String.format("%-40s|%-10s %n",header1,header2);
+        partName = partName + divider;
+        for (int i = 0; i < parts.size(); i++){
+            String temp = String.format("%-40s|%10s %n",  parts.get(i).getName(), parts.get(i).getQuantity());
+            partName = partName + temp;
+        }
+
+        System.out.println(partName);
+        return partName;
+    }
+    // comment to make a a change to merge to master
     /*
-Filters the Employee table based on what string input the user types into the bar (a search function)
-precondition: there must be objects for the search to filter through and the user must enter a proper string
-postcondition: the table will list only the employees that have strings matching what the user entered in the search bar
-*/
+    Filters the Employee table based on what string input the user types into the bar (a search function)
+    precondition: there must be objects for the search to filter through and the user must enter a proper string
+    postcondition: the table will list only the employees that have strings matching what the user entered in the search bar
+    */
     FilteredList filter = new FilteredList(reports, e->true);
     public void searchPart(KeyEvent event) {
         text_search.textProperty().addListener(((observable, oldValue, newValue) -> {
@@ -417,6 +459,7 @@ postcondition: the table will list only the employees that have strings matching
         }else {
             String inventoryReport = tableView.getSelectionModel().getSelectedItem().getInventoryReport();
             System.out.println(inventoryReport);
+            text_inventory_report.setStyle("-fx-font-family: monospace");
             text_inventory_report.setText(inventoryReport);
         }
     }
