@@ -96,7 +96,7 @@ public class CustomerController implements Initializable {
         states_cb.setItems(getStates());
 
         // COMMENT OUT THE IMAGE READING LINES OUT IF NOT EXPORTING TO A JAR
-        Image imageCar = new Image(getClass().getResourceAsStream("/sports-car.png"));
+        /*Image imageCar = new Image(getClass().getResourceAsStream("/sports-car.png"));
         cars_button.setGraphic(new ImageView(imageCar));
 
         Image imageEmployee = new Image(getClass().getResourceAsStream("/employee.png"));
@@ -109,7 +109,7 @@ public class CustomerController implements Initializable {
         CarServiceOrder_btn.setGraphic(new ImageView(carService));
 
         Image reports = new Image(getClass().getResourceAsStream("/reports.png"));
-        report_button.setGraphic(new ImageView(reports));
+        report_button.setGraphic(new ImageView(reports));*/
     }
     /*
         Connecting to database and reading Customer objects to populate ObservableList
