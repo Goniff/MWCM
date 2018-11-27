@@ -23,7 +23,7 @@ import java.sql.*;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
-public class CustomerController implements Initializable {
+public class Controller implements Initializable {
 
     @FXML
     private TableView<Customer> tableView;
@@ -73,9 +73,7 @@ public class CustomerController implements Initializable {
 
     static ObservableList<Customer> customers = FXCollections.observableArrayList();
     private ObservableList<String> state_list = FXCollections.observableArrayList();
-    private String[] states =  { "AK","AL","AR","AS","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID","IL",
-            "IN","KS","KY","LA","MA","MD","ME","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY","OH",
-            "OK","OR","PA","PR","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY"};
+    private String[] states =  { "AK","AL","AR","AS","AZ","CA","CO","CT","DC","DE","FL","GA","GU","HI","IA","ID","IL","IN","KS","KY","LA","MA","MD","ME","MI","MN","MO","MS","MT","NC","ND","NE","NH","NJ","NM","NV","NY","OH","OK","OR","PA","PR","RI","SC","SD","TN","TX","UT","VA","VI","VT","WA","WI","WV","WY"};
 
 
     @Override
@@ -95,19 +93,19 @@ public class CustomerController implements Initializable {
         tableView.setItems(getCustomer());
         states_cb.setItems(getStates());
 
-        Image imageCar = new Image(getClass().getResourceAsStream("/Images/sports-car.png"));
+        Image imageCar = new Image(getClass().getResourceAsStream("../Images/sports-car.png"));
         cars_button.setGraphic(new ImageView(imageCar));
 
-        Image imageEmployee = new Image(getClass().getResourceAsStream("/Images/employee.png"));
+        Image imageEmployee = new Image(getClass().getResourceAsStream("../Images/employee.png"));
         employee_button.setGraphic(new ImageView(imageEmployee));
 
-        Image imageInventory = new Image(getClass().getResourceAsStream("/Images/inventory.png"));
+        Image imageInventory = new Image(getClass().getResourceAsStream("../Images/inventory.png"));
         inventory_button.setGraphic(new ImageView(imageInventory));
 
-        Image carService = new Image(getClass().getResourceAsStream("/Images/carservices.png"));
+        Image carService = new Image(getClass().getResourceAsStream("../Images/carservices.png"));
         CarServiceOrder_btn.setGraphic(new ImageView(carService));
 
-        Image reports = new Image(getClass().getResourceAsStream("/Images/reports.png"));
+        Image reports = new Image(getClass().getResourceAsStream("../Images/reports.png"));
         report_button.setGraphic(new ImageView(reports));
     }
     /*
@@ -122,16 +120,8 @@ public class CustomerController implements Initializable {
             ResultSet rs = statement.executeQuery("select * from Customer");
 
             while (rs.next()) {
-                Customer newCustomer = new Customer(
-                        rs.getLong("Key"),
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getString("number"),
-                        rs.getString("email"),
-                        rs.getString("address"),
-                        rs.getString("city"),
-                        rs.getString("zipcode"),
-                        rs.getString("state"));
+                Customer newCustomer = new Customer(rs.getString("firstName"), rs.getString("lastName"), rs.getString("number"),
+                        rs.getString("email"), rs.getString("address"), rs.getString("city"),rs.getString("zipcode"),rs.getString("state"));
                 customers.add(newCustomer);
             }
         } catch (SQLException e) {
@@ -164,17 +154,15 @@ public class CustomerController implements Initializable {
         String city = text_city.getText();
         String zipcode = text_zipcode.getText();
         String state = states_cb.getSelectionModel().getSelectedItem();
-        if(email.length() == 0 ){
-            email = "";
-        }
-        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 ||
-                address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0) {
+
+        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 || email.length() == 0 || address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0) {
             if (number.length() < 10) {
                 System.out.println("Invalid number");
             }
-
             System.out.println("One or more fields encountered and error");
         } else {
+            Customer cust = new Customer(firstName, lastName, number, email, address, city, zipcode, state);
+            customers.add(cust);
             String sql = "INSERT INTO Customer(firstName,lastName,number,email,address,city,zipcode,state)  VALUES(?,?,?,?,?,?,?,?)";
             try {
                 Connection con = DBConnector.getConnection();
@@ -193,7 +181,6 @@ public class CustomerController implements Initializable {
             } catch (SQLException e) {
                 System.err.println(e.getMessage());
             }
-            refreshTable();
         }
     }
     /*
@@ -202,7 +189,7 @@ public class CustomerController implements Initializable {
        postcondition: text fields on the left of the main window have been populated with the customer's information
     */
     public void clickCustomer(MouseEvent actionEvent) {
-        if (actionEvent.getClickCount() == 1 && !tableView.getSelectionModel().isEmpty()) {
+        if (actionEvent.getClickCount() == 1) {
             Customer clickedCustomer = tableView.getSelectionModel().getSelectedItem();
 
             text_first.setText(clickedCustomer.getFirstName());
@@ -236,19 +223,13 @@ public class CustomerController implements Initializable {
         String city = text_city.getText();
         String zipcode = text_zipcode.getText();
         String state = states_cb.getSelectionModel().getSelectedItem();
-        long key = clickedCustomer.getpKey().getValue();
-
-        if(email.length() == 0){
-            email = "";
-        }
-
-        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 || address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0) {
+        if (firstName.length() == 0 || lastName.length() == 0 || number.length() == 0 || email.length() == 0 || address.length() == 0 || city.length() == 0 || zipcode.length() < 5 || state.length() == 0) {
             if (number.length() < 10) {
                 System.out.println("Invalid number");
             }
             System.out.println("One or more fields encountered and error");
         } else {
-            String sql = "UPDATE Customer SET firstName=?, lastName=?, number=?, email=?, address=?, city=?, zipcode=?, state=? where Key = ?";
+            String sql = "UPDATE Customer SET firstName=?, lastName=?, number=?, email=?, address=?, city=?, zipcode=?, state=? where email ='" + clickedCustomer.getEmailAddress() + "'";
             System.out.println(sql);
             try {
                 Connection con = DBConnector.getConnection();
@@ -261,7 +242,6 @@ public class CustomerController implements Initializable {
                 preparedStatement.setString(6, city);
                 preparedStatement.setString(7, zipcode);
                 preparedStatement.setString(8, state);
-                preparedStatement.setLong(9, key);
                 preparedStatement.execute();
                 System.out.println("Update Successful");
                 customers.set(index, clickedCustomer);
@@ -281,13 +261,10 @@ public class CustomerController implements Initializable {
     */
     public void deleteCustomer() {
         Customer clickedCustomer = tableView.getSelectionModel().getSelectedItem();
-        //String sql = "DELETE FROM Customer where email = '" + clickedCustomer.getEmailAddress() + "'";
-        String sql = "DELETE FROM Customer where Key = ?";
+        String sql = "DELETE FROM Customer where email = '" + clickedCustomer.getEmailAddress() + "'";
         try {
             Connection con = DBConnector.getConnection();
             PreparedStatement preparedStatement = con.prepareStatement(sql);
-            long key = clickedCustomer.getpKey().getValue();
-            preparedStatement.setLong(1, key);
             preparedStatement.execute();
             System.out.println("Delete Successful");
             refreshTable();
@@ -318,16 +295,8 @@ public class CustomerController implements Initializable {
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery("select * from Customer");
             while (rs.next()) {
-                Customer newCustomer = new Customer(
-                        rs.getLong("Key"),
-                        rs.getString("firstName"),
-                        rs.getString("lastName"),
-                        rs.getString("number"),
-                        rs.getString("email"),
-                        rs.getString("address"),
-                        rs.getString("city"),
-                        rs.getString("zipcode"),
-                        rs.getString("state"));
+                Customer newCustomer = new Customer(rs.getString("firstName"), rs.getString("lastName"), rs.getString("number"),
+                        rs.getString("email"), rs.getString("address"), rs.getString("city"), rs.getString("zipcode"), rs.getString("state"));
                 customers.add(newCustomer);
             }
         } catch (SQLException e) {
@@ -356,11 +325,16 @@ public class CustomerController implements Initializable {
                         return true;
                     } else if (customer.getEmailAddress().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
-                    } else if (customer.getEmailAddress().toLowerCase().contains(lowerCaseFilter)) {
-                        return true;
                     } else if (customer.getAddress().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
+                    } else if (customer.getCity().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    }else if (customer.getZipcode().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
+                    }else if (customer.getState().toLowerCase().contains(lowerCaseFilter)) {
+                        return true;
                     }
+
                     return false;
                 }
             });
@@ -439,12 +413,12 @@ public class CustomerController implements Initializable {
 
 
     /*
-        Opens the Report window which displays all the Orders in the system's database when the user
-        clicks the Report button
-        precondition: the customer page must be running and displaying properly
-        postcondition: a new window is opened with methods and information pertaining to Report objects
-        and the ReportController
-    */
+    Opens the Report window which displays all the Orders in the system's database when the user
+    clicks the Report button
+    precondition: the customer page must be running and displaying properly
+    postcondition: a new window is opened with methods and information pertaining to Report objects
+    and the ReportController
+ */
     public void reportWindow(MouseEvent mouseEvent){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Report.fxml"));

@@ -307,7 +307,7 @@ public class CarController implements Initializable {
        precondition: there must be objects for the search to filter through and the user must enter a proper string
        postcondition: the table will list only the car that have strings matching what the user entered in the search bar
     */
-    /*FilteredList filter = new FilteredList(cars, e->true);
+    FilteredList filter = new FilteredList(cars, e->true);
     public void search(KeyEvent event) {
         text_search.textProperty().addListener(((observable, oldValue, newValue) -> {
             filter.setPredicate((Predicate<? super Car>) car -> {
@@ -326,34 +326,6 @@ public class CarController implements Initializable {
                     } else if (car.getComments().toLowerCase().contains(lowerCaseFilter)) {
                         return true;
                     }
-                    return false;
-                }
-            });
-            SortedList<Car> sortedDatabase = new SortedList<>(filter);
-            sortedDatabase.comparatorProperty().bind(carTableView.comparatorProperty());
-            carTableView.setItems(sortedDatabase);
-        }));
-    }*/
-
-    FilteredList filter = new FilteredList(cars, e->true);
-    public void search(KeyEvent event) {
-        text_search.textProperty().addListener(((observable, oldValue, newValue) -> {
-            filter.setPredicate((Predicate<? super Car>) car -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                } else {
-                    String lowerCaseFilter = newValue.toLowerCase();
-                    if (car.getModel().toLowerCase().contains(lowerCaseFilter)) {
-                        return true;
-                    } else if (car.getMake().toLowerCase().contains(lowerCaseFilter)) {
-                        return true;
-                    } else if (car.getUserID().toLowerCase().contains(lowerCaseFilter)) {
-                        return true;
-                    } else if (car.getYear().toLowerCase().contains(lowerCaseFilter)) {
-                        return true;
-                    } //else if (car.getComments().toLowerCase().contains(lowerCaseFilter)) {
-                        //return true;
-                    //}
                     return false;
                 }
             });
